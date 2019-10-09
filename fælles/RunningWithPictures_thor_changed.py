@@ -102,4 +102,6 @@ cv2.destroyAllWindows()
 
 #Make a video
 #AF.video_export_v1(output_img_folder,image_format,True)
+
+#os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video4_output')
 print(AF.video_export_v2(output_img_folder,img_marked))
