@@ -4,20 +4,26 @@ import os, numpy as np, glob, re, cv2
 #Homemade functions
 def img_loader(input_img_folder,image_format,sort):
     try:
+        cwd = os.getcwd()
         os.chdir(input_img_folder)
         files =glob.glob1(input_img_folder,'*'+image_format)
         if sort==True:
             files = sorted(files, key=lambda x:float(re.findall(r"(\d+)",x)[0]))
+        os.chdir(cwd)
         return files
     except:
+        os.chdir(cwd)
         return None
 
 def img_marked_saver(img_folder,image_format,img_No, img):
-    try:    
+    try:
+        cwd = os.getcwd()    
         os.chdir(img_folder)
         cv2.imwrite(str(img_No)+image_format, img)
+        os.chdir(cwd)
         return True
     except:
+        os.chdir(cwd)
         return False
 
 def ball_drift(center, previouscenter, threshold):
@@ -61,23 +67,26 @@ def video_export_v1(output_img_folder,image_format,sort):
     except:
         return None
 
-def video_export_v2(output_img_folder,images):
+def video_export_v2(output_img_folder,images,filename):
+    
     cwd = os.getcwd()
     os.chdir(output_img_folder)
     img_array = []
     try:
         for img in images:
-            height, width, = img.shape 
+            height, width, layer = img.shape 
             size = (width,height)
             img_array.append(img)
-        out = cv2.VideoWriter(r"ThorHarEnLilleDiller.avi",cv2.VideoWriter_fourcc(*'DIVX'), 15, size)
+        out = cv2.VideoWriter(filename,cv2.VideoWriter_fourcc(*'DIVX'), 15, size)
         
         for i in range(len(img_array)):
             out.write(img_array[i])
         out.release()
+        print(cwd)
         os.chdir(cwd)
-        return 1
+        return True
     except:
+        os.chdir(cwd)           
         return None
 
 def colourmask(img,colour):
