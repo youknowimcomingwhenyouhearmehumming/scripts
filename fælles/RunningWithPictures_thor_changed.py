@@ -2,6 +2,7 @@
 
 import cv2, os, numpy as np
 import AlbertFunctions as AF
+import ThorFunctions as TH
 
 #Defining input/output folders and image format
 input_img_folder=r'C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video4_as_pic'
@@ -104,4 +105,4 @@ cv2.destroyAllWindows()
 #AF.video_export_v1(output_img_folder,image_format,True)
 
 #os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video4_output')
-print(AF.video_export_v2(output_img_folder,img_marked))
+AF.video_export_v2(output_img_folder,img_marked)
