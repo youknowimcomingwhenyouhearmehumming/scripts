@@ -68,7 +68,7 @@ def video_export_v2(output_img_folder,images):
             height, width, layers = img.shape
             size = (width,height)
             img_array.append(img)
-        out = cv2.VideoWriter('project2.avi',cv2.VideoWriter_fourcc(*'DIVX'), 15, size)
+        out = cv2.VideoWriter(output_img_folder+'/project2.avi',cv2.VideoWriter_fourcc(*'DIVX'), 15, size)
         
         for i in range(len(img_array)):
             out.write(img_array[i])
