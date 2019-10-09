@@ -7,7 +7,7 @@ def img_loader(input_img_folder,image_format,sort):
         os.chdir(input_img_folder)
         files =glob.glob1(input_img_folder,'*'+image_format)
         if sort==True:
-            files = sorted(files, key=lambda x:float(re.findall("(\d+)",x)[0]))
+            files = sorted(files, key=lambda x:float(re.findall(r"(\d+)",x)[0]))
         return files
     except:
         return None
