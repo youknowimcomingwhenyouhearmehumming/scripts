@@ -2,6 +2,7 @@
 
 import cv2, os, numpy as np
 import AlbertFunctions as AF
+import ThorFunctions as TH
 
 
 
@@ -70,11 +71,42 @@ for file in files:
 #    cimg = AF.rotateImage(cimg,180)
     img = cv2.cvtColor(cimg,cv2.COLOR_BGR2GRAY)
     img = cv2.GaussianBlur(img,(11,11),0)
+    
+    
     #img = cv2.erode(img, None, iterations=1)
     #img = cv2.dilate(img, None, iterations=1)
 
     #Find circles
     circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,minDist=minDist,param1=param1,param2=param2,minRadius=minRadius,maxRadius=maxRadius)
+    
+    circles_h=TH.h_method(img,1,150,130,14,5,40)    
+
+    imgT=img.copy()
+    blurred = cv2.GaussianBlur(imgT, (11, 11), 0) #Delte this line and import the blurred image directely
+    hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
+    
+    h_part=hsv[:,:,0]
+    #cv2.imshow('h',h_part)  #Shows the original h part image of the hsv format
+    iterations=2
+    h_part = cv2.erode(h_part, None, iterations=iterations)
+    h_part = cv2.dilate(h_part, None, iterations=iterations)
+    
+    
+    circles_h = cv2.HoughCircles(h_part,cv2.HOUGH_GRADIENT,dbValue_h,minDist=minDist_h,
+    param1=param1_h,param2=param2_h,minRadius=minRadius_h,maxRadius=maxRadius_h) 
+    
+    circles_h = np.uint16(np.around(circles_h))
+    for i in circles_h[0,:]:
+        # draw the outer circle
+        cv2.circle(imgT,(i[0],i[1]),i[2],(0,255,0),12)
+        # draw the center of the circle
+        cv2.circle(imgT,(i[0],i[1]),2,(0,0,255),8)
+    
+    cimg = cv2.cvtColor(imgT,cv2.COLOR_BGR2RGB)
+    plt.figure('h part')
+    imgplot = plt.imshow(cimg)
+    
+#    all_pos_x,all_pos_y,all_radius=concatenate_results(method1=circles_h,method2=circles_s,method3=circles_v,method4=circles_gray)
     
     try:
         circles = np.uint16(np.around(circles))
@@ -96,6 +128,8 @@ for file in files:
           AF.img_marked_saver(output_img_folder,image_format,img_No,cimg)
       except:
           print('Could not save image')
+          
+    
     img_No= img_No + 1
     img_marked.append(cimg)
 

@@ -86,7 +86,7 @@ for file in glob.glob("*.png"): # This line take all the files of the filename .
     #imgplot = plt.imshow(hsv_rgb)
     
     
-        circles_h=h_method(img_blurred,1,150,130,14,5,40)
+        circles_h=TH.h_method(img_blurred,1,150,130,14,5,40)
         circles_s=s_method(img_blurred,1,150,130,15,5,40)
         circles_v=v_method(img_blurred,1,150,150,15,5,40)
         circles_gray=gray_method(str(file),1,150,200,10,10,40)

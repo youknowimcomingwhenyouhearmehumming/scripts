@@ -34,9 +34,11 @@ def h_method(img_original,dbValue_h,minDist_h,param1_h,param2_h,minRadius_h,maxR
         plt.figure('h part')
         imgplot = plt.imshow(cimg)
         
+#        print('Succed')
         return circles_h
 
     except:
+#        print('not succed')
         pass
     
     
@@ -87,7 +89,6 @@ def v_method(img_original,dbValue_v,minDist_v,param1_v,param2_v,minRadius_v,maxR
         param1=param1_v,param2=param2_v,minRadius=minRadius_v,maxRadius=maxRadius_v) 
         
         circles_v = np.uint16(np.around(circles_v))
-        print(circles_v)
         for i in circles_v[0,:]:
             # draw the outer circle
             cv2.circle(img,(i[0],i[1]),i[2],(0,255,0),12)
@@ -230,8 +231,8 @@ def Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos,thres_avg_pos):
         if number_of_elements_outside_threshold==0:
             go=False
             
-    avg_pos_final=np.mean(selected_pos_valid)
-    return np.round(avg_pos_final)
+    avg_pos=np.mean(selected_pos_valid)
+    return np.round(avg_pos)
 
 
 #
@@ -273,21 +274,21 @@ def Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos,thres_avg_pos):
 #
 #
 #
-#avg_pos_x_final=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_pos_valid_oldpos_x,thres_avg_pos=10)
-#avg_pos_y_final=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_pos_valid_oldpos_y,thres_avg_pos=10)
-#avg_radius_final=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_radius_valid_old,thres_avg_pos=5)
+#avg_pos_x=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_pos_valid_oldpos_x,thres_avg_pos=10)
+#avg_pos_y=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_pos_valid_oldpos_y,thres_avg_pos=10)
+#avg_radius=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_radius_valid_old,thres_avg_pos=5)
 #
 #
 #
-#print('avgpos_x',avg_pos_x_final)
-#print('avgpos_y',avg_pos_y_final)
-#print('avg_radius_final',avg_radius_final)
+#print('avgpos_x',avg_pos_x)
+#print('avgpos_y',avg_pos_y)
+#print('avg_radius',avg_radius)
 #
 #"""
-#lav et plot på bilelde med alle de muligede position og så avg_final
+#lav et plot på bilelde med alle de muligede position og så avg
 #"""
 #
-#avg_all_final=np.concatenate((int(avg_pos_x_final),int(avg_pos_y_final),int(avg_radius_final)), axis=None)
+#avg_all=np.concatenate((int(avg_pos_x),int(avg_pos_y),int(avg_radius)), axis=None)
 ##avg_all=np.concatenate((all_pos_x,all_pos_y,all_radius), axis=2)
 #avg_all=np.vstack((all_pos_x,all_pos_y,all_radius)).T
 #
@@ -298,9 +299,9 @@ def Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos,thres_avg_pos):
 #    # draw the center of the circle
 #    cv2.circle(img,(i[0],i[1]),2,(0,0,255),8)
 #
-#cv2.circle(img,(avg_all_final[0],avg_all_final[1]),avg_all_final[2],(255,0,0),12)
+#cv2.circle(img,(avg_all[0],avg_all[1]),avg_all[2],(255,0,0),12)
 ## draw the center of the circle
-#cv2.circle(img,(avg_all_final[0],avg_all_final[1]),2,(255,255,0),8)
+#cv2.circle(img,(avg_all[0],avg_all[1]),2,(255,255,0),8)
 #    
 #cimg = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
 #plt.figure('avg_all')

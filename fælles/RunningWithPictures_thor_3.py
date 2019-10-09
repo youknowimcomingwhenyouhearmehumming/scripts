@@ -1,9 +1,3 @@
-import cv2
-import numpy as np
-import os
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
-import imutils
 
 
 
@@ -230,138 +224,136 @@ def Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos,thres_avg_pos):
         if number_of_elements_outside_threshold==0:
             go=False
             
-    avg_pos=np.mean(selected_pos_valid)
-    return np.round(avg_pos)
+    avg_pos_final=np.mean(selected_pos_valid)
+    return np.round(avg_pos_final)
 
 
+import cv2
+import numpy as np
+import os
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+import imutils
+
+import AlbertFunctions as AF
+import glob 
+from PIL import Image
+
+import ThorFunctions as TH
+
+
+#Defining input/output folders and image format
+input_img_folder=r"C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video4_as_pic"
+output_img_folder=r"C:\Users\JAlbe\OneDrive\Drone projekt\Data\vid"
+start_folder=r"C:\Users\JAlbe\OneDrive\Drone projekt\Scripts\scripts\fælles"
+image_format = '.png'
+
+
+
+##First, get the files:
+#files = AF.img_loader(input_img_folder,image_format,True)
+##
+##for file in files:    
+##    print(file)
+##    img = cv2.imread(file,1)
 
 os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video4_as_pic')
-file_name_of_picture='video_1181.png'   #'pica33.png'
-#
-#os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/outdoor')
-#file_name_of_picture='pica36.png'   #'pica33.png'
 
-
-img = cv2.imread(file_name_of_picture,1)
-
-plt.close()
-
-
-img_RGB= cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-plt.figure('original')
-imgplot = plt.imshow(img_RGB)
-blurred = cv2.GaussianBlur(img, (11, 11), 0)
-hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
-cv2.imshow('hsv',hsv)
-plt.figure('HSV')
-hsv_rgb = cv2.cvtColor(hsv, cv2.COLOR_BGR2HSV)
-imgplot = plt.imshow(hsv_rgb)
-
-
-circles_h=h_method(img,1,100,40,19,5,20)
-circles_s=s_method(img,1,100,200,22,5,20)
-circles_v=v_method(img,1,100,150,16,5,20)
-circles_gray=gray_method(file_name_of_picture,1,100,200,19,10,20)
-
-
-all_pos_x,all_pos_y,all_radius=concatenate_results(method1=circles_h,method2=circles_s,method3=circles_v,method4=circles_gray)
-
-
-all_pos_valid_oldpos_x=Discard_if_too_far_from_old_pos(all_pos=all_pos_x,oldpos=420,thres_oldpos=50)
-all_pos_valid_oldpos_y=Discard_if_too_far_from_old_pos(all_pos=all_pos_y,oldpos=248,thres_oldpos=50)
-all_radius_valid_old=Discard_if_too_far_from_old_pos(all_pos=all_radius,oldpos=12,thres_oldpos=10)
-
-
-
-avg_pos_x=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_pos_valid_oldpos_x,thres_avg_pos=40)
-avg_pos_y=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_pos_valid_oldpos_y,thres_avg_pos=40)
-avg_radius=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_radius_valid_old,thres_avg_pos=5)
-
-
-
-print('avgpos_x',avg_pos_x)
-print('avgpos_y',avg_pos_y)
-print('avg_radius',avg_radius)
-
-"""
-lav et plot på bilelde med alle de muligede position og så avg
-"""
-
-avg_pos=np.concatenate((int(avg_pos_x),int(avg_pos_y),int(avg_radius)), axis=None)
-#all_pos=np.concatenate((all_pos_x,all_pos_y,all_radius), axis=2)
-all_pos=np.vstack((all_pos_x,all_pos_y,all_radius)).T
-
-all_pos = np.uint16(np.around(all_pos))
-for i in all_pos[:]:
-    # draw the outer circle
-    cv2.circle(img,(i[0],i[1]),i[2],(0,255,0),12)
-    # draw the center of the circle
-    cv2.circle(img,(i[0],i[1]),2,(0,0,255),8)
-
-cv2.circle(img,(avg_pos[0],avg_pos[1]),avg_pos[2],(255,0,0),12)
-# draw the center of the circle
-cv2.circle(img,(avg_pos[0],avg_pos[1]),2,(255,255,0),8)
+counter=0
+for filename in sorted(glob.glob('*.png'), key=os.path.getmtime):
     
-cimg = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
-plt.figure('all_pos')
-imgplot = plt.imshow(cimg)
+#for filename in glob.glob("*.png"): # This line take all the files of the filename .png from the current folder. Source http://stackoverflow.com/questions/6997419/how-to-create-a-loop-to-read-several-images-in-a-python-script
+    counter+=1
+    if counter>10:
+        break     
+#    col=Image.open(filename)
+    img = cv2.imread(filename)
+    
+    
+#    circles_h=TH.h_method(img,1,150,130,14,5,40)
+#    circles_s=TH.s_method(img,1,150,130,15,5,40)
+    circles_v=TH.v_method(img,1,150,150,15,5,40)
+    circles_gray=TH.gray_method(filename,1,150,200,10,10,40)
 
+    #circles_h=h_method(img,1,150,130,14,5,40)
+    #circles_s=s_method(img,1,150,130,15,5,40)
+    #circles_v=v_method(img,1,150,150,15,5,40)
+    #circles_gray=gray_method(file_name_of_picture,1,150,200,10,10,40)
 
-
-
-#PICA 33 x 598
-#circles_h=h_method(img,1,500,200,13,10,40)
-#circles_s=s_method(img,1,500,190,13,10,40)
-#circles_v=v_method(img,1,500,195,16,10,40)
-#circles_gray=gray_method(file_name_of_picture,1,200,300,11,10,40)
-#PICA 34  x=636
-#circles_h=h_method(img,1,150,200,13,10,40)
-#circles_s=s_method(img,1,150,190,13,10,40)
-#circles_v=v_method(img,1,150,195,16,10,40)
-#circles_gray=gray_method(file_name_of_picture,1,150,300,11,10,40)
-#PICA 35 x=676
-#circles_h=h_method(img,1,150,200,13,5,40)
-#circles_s=s_method(img,1,150,190,13,5,40)
+##    cimg = cv2.imread((input_img_folder+r"/"+file),cv2.IMREAD_UNCHANGED)
+###    if cimg.shape[0] != 480:
+###        cimg = cv2.resize(cimg, (640,480))
+###    cimg = AF.rotateImage(cimg,180)
+##    img = cv2.cvtColor(cimg,cv2.COLOR_BGR2GRAY)
+##    img = cv2.GaussianBlur(img,(11,11),0)
+#
+##
+##os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/outdoor')
+##file_name_of_picture='pica36.png'   #'pica33.png'
+#
+#
+#img = cv2.imread(file_name_of_picture,1)
+#
+#plt.close()
+#
+#
+#img_RGB= cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+#plt.figure('original')
+#imgplot = plt.imshow(img_RGB)
+#blurred = cv2.GaussianBlur(img, (11, 11), 0)
+#hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
+#cv2.imshow('hsv',hsv)
+#plt.figure('HSV')
+#hsv_rgb = cv2.cvtColor(hsv, cv2.COLOR_BGR2HSV)
+#imgplot = plt.imshow(hsv_rgb)
+#
+#
+#circles_h=h_method(img,1,150,130,14,5,40)
+#circles_s=s_method(img,1,150,130,15,5,40)
 #circles_v=v_method(img,1,150,150,15,5,40)
-#circles_gray=gray_method(file_name_of_picture,1,150,300,11,10,40)
+#circles_gray=gray_method(file_name_of_picture,1,150,200,10,10,40)
 #
-
-#A=np.array([10,11,13])
-#B=np.array([8,7,2])
-#C=np.array([12,18,16])
 #
-#mask=(A[:]<=B+1)
+#all_pos_x,all_pos_y,all_radius=concatenate_results(method1=circles_h,method2=circles_s,method3=circles_v,method4=circles_gray)
 #
-#mask_multiple_criteria=[(A < B) & (A > C) & (A==5)]
-
-
-
-
-
-
-"""
-This whol part is for combining the x and y component into one number
-"""
-#"""
-#This parts combines the x and y components into one number
-#"""
-#h_pos_1D=np.sqrt(np.power(circles_h[0,0,0:2], 2)+np.power(circles_h[0,0,0:2],2))
-#s_pos_1D=np.sqrt(np.power(circles_s[0,0,0:2], 2)+np.power(circles_s[0,0,0:2],2))
-#v_pos_1D=np.sqrt(np.power(circles_v[0,0,0:2], 2)+np.power(circles_v[0,0,0:2],2))
-#gray_pos_1D=np.sqrt(np.power(circles_gray[0,0,0:2], 2)+np.power(circles_gray[0,0,0:2],2))
-#"""
-#Here it's checked wheter each individual position is too far away from the oldposition +/- the threshold of 
-#the old position.
-#"""
-#all_pos=np.concatenate((h_pos_1D,s_pos_1D,v_pos_1D,gray_pos_1D), axis=None)
-#all_pos_valid_oldpos=all_pos[(oldpos-thres_oldpos < all_pos) & (oldpos+thres_oldpos > all_pos)]  
+#
+#all_pos_valid_oldpos_x=Discard_if_too_far_from_old_pos(all_pos=all_pos_x,oldpos=260,thres_oldpos=50)
+#all_pos_valid_oldpos_y=Discard_if_too_far_from_old_pos(all_pos=all_pos_y,oldpos=248,thres_oldpos=50)
+#all_radius_valid_old=Discard_if_too_far_from_old_pos(all_pos=all_radius,oldpos=12,thres_oldpos=10)
+#
+#
+#
+#avg_pos_x_final=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_pos_valid_oldpos_x,thres_avg_pos=10)
+#avg_pos_y_final=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_pos_valid_oldpos_y,thres_avg_pos=10)
+#avg_radius_final=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_radius_valid_old,thres_avg_pos=5)
+#
+#
+#
+#print('avgpos_x',avg_pos_x_final)
+#print('avgpos_y',avg_pos_y_final)
+#print('avg_radius_final',avg_radius_final)
 #
 #"""
+#lav et plot på bilelde med alle de muligede position og så avg_final
 #"""
-#avg_pos_all=np.mean(all_pos_valid_oldpos)
 #
-#while(np.sum([(avg_pos_all-thres_avg_pos < all_pos_valid_oldpos) & (avg_pos_all+thres_avg_pos < all_pos_valid_oldpos)])>0): #While some of the positions are outside the mean +/- threshold
-#    all_pos_valid_oldpos[(avg_pos_all-thres_avg_pos < all_pos_valid_oldpos) & (avg_pos_all+thres_avg_pos > all_pos_valid_oldpos)]
+#avg_all_final=np.concatenate((int(avg_pos_x_final),int(avg_pos_y_final),int(avg_radius_final)), axis=None)
+##avg_all=np.concatenate((all_pos_x,all_pos_y,all_radius), axis=2)
+#avg_all=np.vstack((all_pos_x,all_pos_y,all_radius)).T
 #
+#avg_all = np.uint16(np.around(avg_all))
+#for i in avg_all[:]:
+#    # draw the outer circle
+#    cv2.circle(img,(i[0],i[1]),i[2],(0,255,0),12)
+#    # draw the center of the circle
+#    cv2.circle(img,(i[0],i[1]),2,(0,0,255),8)
 #
-#avg_pos(all_pos_valid_oldpos)
+#cv2.circle(img,(avg_all_final[0],avg_all_final[1]),avg_all_final[2],(255,0,0),12)
+## draw the center of the circle
+#cv2.circle(img,(avg_all_final[0],avg_all_final[1]),2,(255,255,0),8)
+#    
+#cimg = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+#plt.figure('avg_all')
+#imgplot = plt.imshow(cimg)
+
+
