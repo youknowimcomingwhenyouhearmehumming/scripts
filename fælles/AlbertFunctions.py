@@ -62,17 +62,20 @@ def video_export_v1(output_img_folder,image_format,sort):
         return None
 
 def video_export_v2(output_img_folder,images):
+    cwd = os.getcwd()
+    os.chdir(output_img_folder)
     img_array = []
     try:
         for img in images:
             height, width, = img.shape 
             size = (width,height)
             img_array.append(img)
-        out = cv2.VideoWriter(output_img_folder+"/project2.avi",cv2.VideoWriter_fourcc(*'DIVX'), 15, size)
+        out = cv2.VideoWriter(r"/ThorHarEnLilleDiller.avi",cv2.VideoWriter_fourcc(*'DIVX'), 15, size)
         
         for i in range(len(img_array)):
             out.write(img_array[i])
         out.release()
+        os.chdir(cwd)
         return 1
     except:
         return None
