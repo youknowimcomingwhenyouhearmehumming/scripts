@@ -1,13 +1,13 @@
+
+
+
+
 import cv2, os, numpy as np
 import AlbertFunctions as AF
 
 #Defining input/output folders and image format
-
-
-#os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/outdoor')
-
-input_img_folder=r'C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo'
-output_img_folder=r'C:/Users/JAlbe/OneDrive/Drone projekt/Albert/Basement_Pictures/Test1/Marked'
+input_img_folder=r'C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video4_as_pic'
+output_img_folder=r'C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video4_output'
 image_format = '.png'
 
 #First, get the files:
@@ -54,6 +54,8 @@ img_marked = []
 img_No = 0
 counter = 0
 
+counter=0
+
 for file in files:    
     os.chdir(input_img_folder)
     cimg = cv2.imread(file,cv2.IMREAD_UNCHANGED)
@@ -67,7 +69,10 @@ for file in files:
 
     #Find circles
     circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,minDist=minDist,param1=param1,param2=param2,minRadius=minRadius,maxRadius=maxRadius)
-
+    
+    counter+=1
+    if counter>90:
+        break 
     try:
         circles = np.uint16(np.around(circles))
         for i in circles[0,:]:
@@ -99,4 +104,4 @@ cv2.destroyAllWindows()
 
 #Make a video
 #AF.video_export_v1(output_img_folder,image_format,True)
-AF.video_export_v2(output_img_folder,img_marked)
+print(AF.video_export_v2(output_img_folder,img_marked))
