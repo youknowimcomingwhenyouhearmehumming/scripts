@@ -44,11 +44,11 @@ def video_export_v1(output_img_folder,image_format,sort):
         os.chdir(output_img_folder)
         files =glob.glob1(output_img_folder,'*'+image_format)
         if sort==True:
-            files = sorted(files, key=lambda x:float(re.findall("(\d+)",x)[0]))
+            files = sorted(files, key=lambda x:float(re.findall(r"(\d+)",x)[0]))
         
         for file in files:
             img = cv2.imread(file)
-            height, width, layers = img.shape
+            height, width, = img.shape
             size = (width,height)
             img_array.append(img)
         print(len(img_array))
@@ -65,10 +65,10 @@ def video_export_v2(output_img_folder,images):
     img_array = []
     try:
         for img in images:
-            height, width, layers = img.shape
+            height, width, = img.shape 
             size = (width,height)
             img_array.append(img)
-        out = cv2.VideoWriter(output_img_folder+'/project2.avi',cv2.VideoWriter_fourcc(*'DIVX'), 15, size)
+        out = cv2.VideoWriter(output_img_folder+r"/project2.avi",cv2.VideoWriter_fourcc(*'DIVX'), 15, size)
         
         for i in range(len(img_array)):
             out.write(img_array[i])
