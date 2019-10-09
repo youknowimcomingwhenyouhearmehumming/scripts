@@ -6,8 +6,8 @@ import AlbertFunctions as AF
 
 
 #Defining input/output folders and image format
-input_img_folder=r"C:\Users\JAlbe\OneDrive\Drone projekt\Data\pic"
-output_img_folder=r"C:\Users\JAlbe\OneDrive\Drone projekt\Data\vid"
+input_img_folder=r'C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video4_as_pic'
+output_img_folder=r'C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video4_output'
 start_folder=r"C:\Users\JAlbe\OneDrive\Drone projekt\Scripts\scripts\fælles"
 image_format = '.png'
 
@@ -56,10 +56,14 @@ img_marked = []
 img_No = 0
 counter = 0
 
+counter=0
 
 save_images = False
 
-for file in files:    
+for file in files:
+    counter+=1
+    if counter>90:
+        break     
     cimg = cv2.imread((input_img_folder+r"/"+file),cv2.IMREAD_UNCHANGED)
 #    if cimg.shape[0] != 480:
 #        cimg = cv2.resize(cimg, (640,480))
