@@ -74,3 +74,13 @@ for kp in keypts:
 cv2.imshow("RES", res)
 cv2.imshow("adap_thresh", adap_thresh)
 #cv2.waitKey(0)
+
+
+#import inspect
+#lines = inspect.getsource(cv2.SimpleBlobDetector_create())
+#print(lines)
+
+
+inspect.getsourcefile(cv2.SimpleBlobDetector_create())
+
+print(inspect.getsource(type(cv2.SimpleBlobDetector_create)))
