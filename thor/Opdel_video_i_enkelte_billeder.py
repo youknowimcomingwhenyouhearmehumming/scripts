@@ -6,11 +6,11 @@ os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/')
 
 
 cv2.namedWindow('w')
-cam0=cv2.VideoCapture('video4.mov')
+cam0=cv2.VideoCapture('video1.mov')
 i=0
 j=0
 
-os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video4_as_pic')
+os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video1_as_pic')
 
 
 while True:
