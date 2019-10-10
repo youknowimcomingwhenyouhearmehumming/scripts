@@ -7,16 +7,12 @@ import imutils
 import math
 
 
-os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/outdoor')
+#os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/outdoor')
+#img = cv2.imread('pica36.png')
 
-print('start')
 
-b=3
-
-# Read image
-img = cv2.imread('pica36.png')
-# convert image to grayscale image
-
+os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video4_as_pic')
+img = cv2.imread('video_610.png' )
 
 #img = cv2.imread('blob.jpg')
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -34,19 +30,23 @@ dilated = cv2.dilate(adap_thresh, element, iterations=1)
 # blob detection
 params = cv2.SimpleBlobDetector_Params()
 params.filterByColor = False
-params.minThreshold = 75
-params.maxThreshold = 86
 params.blobColor = 0
-params.minDistBetweenBlobs=100
+#params.minThreshold = 14
+#params.maxThreshold = 25
+params.minDistBetweenBlobs=1
 params.filterByArea = True
-params.minArea = 150
-params.maxArea = 300
+params.minArea = 5
+params.maxArea = 100000
 params.filterByCircularity = True
-params.minCircularity =.2
+params.minCircularity =.84 #89 for img200  1, #90 img300 1,89 img610 3, 86 img 1150 3,  
 params.maxCircularity = 1
 params.filterByConvexity = True
-params.minConvexity = 0.1
-params.maxConvexity=0.7
+params.minConvexity = 0.96#98 for img200 1,98 for img300 1,97 img610 20, 98 img 1150 2,   
+params.maxConvexity=1
+params.filterByInertia = True
+params.minInertiaRatio=0.50 #84 for img200 2, #77 for img300 5, 75 img610 15, 55  img 1150 15, 
+params.maxInertiaRatio=1
+
 
 
 det = cv2.SimpleBlobDetector_create(params)
@@ -63,12 +63,15 @@ res = cv2.drawKeypoints(img,
                         np.array([]),
                         (0, 0, 255 ),
                         cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
-
+x_pos=[]
+y_pos=[]
 i = 0
 for kp in keypts:
     print("(%f,%f)"%(kp.pt[0],kp.pt[1]))
     i+=1
     cv2.rectangle(res,(int(kp.pt[0]),int(kp.pt[1])),(int(kp.pt[0])+1,int(kp.pt[1])+1),(0,255,0),2)
+    x_pos.append(int(np.round(kp.pt[0])))
+    y_pos.append(int(np.round(kp.pt[1])))
 
 #cv2.imshow("Keypoints", im_with_keypoints)
 cv2.imshow("RES", res)
@@ -76,11 +79,4 @@ cv2.imshow("adap_thresh", adap_thresh)
 #cv2.waitKey(0)
 
 
-#import inspect
-#lines = inspect.getsource(cv2.SimpleBlobDetector_create())
-#print(lines)
 
-
-inspect.getsourcefile(cv2.SimpleBlobDetector_create())
-
-print(inspect.getsource(type(cv2.SimpleBlobDetector_create)))
