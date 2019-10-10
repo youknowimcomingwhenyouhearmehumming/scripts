@@ -6,7 +6,8 @@ import imutils
 #name = sys.argv[1]
 
 #name = 'ball_track.mp4'
-name = 'flight4_red.mp4'
+path_to_video = r"C:\Users\JAlbe\OneDrive\Drone projekt\Data"
+name = "flight4_red.mp4"
 #name = '358_ball_lost.mp4'
 minDist = 500 # 500
 param1 = 200 #500
@@ -15,7 +16,7 @@ minRadius = 15 # was 5
 maxRadius = 80 # was 50
 
 
-cap = cv2.VideoCapture(name)
+cap = cv2.VideoCapture((path_to_video+r"/"+name))
   
 
 # Raspicam
