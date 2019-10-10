@@ -87,9 +87,10 @@ def draw_circles(img, circles):
                 cv2.circles(img,(i[0],i[1]),i[2],(0,255,0),2)
                 # draw the center of the circle
                 cv2.circles(cimg,(i[0],i[1]),2,(0,0,255),3)
-        return None
+        return img
     except:
         print('No circles found in image: ')
+        return None
 
 
 
