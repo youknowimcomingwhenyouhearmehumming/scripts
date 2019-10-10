@@ -67,6 +67,32 @@ def video_export_v1(output_img_folder,image_format,sort):
     except:
         return None
 
+def h_circles(img, blur,params):
+    try:
+        img = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+        if blur:
+            img = cv2.GaussianBlur(img,(3,3),0)
+        if params == []:
+            params=[500, 200, 5, 15, 80]        
+        circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,minDist=params[0],param1=params[1],param2=params[2],minRadius=params[3],maxRadius=params[4])
+        return circles
+    except:
+        return None
+
+def draw_circles(img, circles):
+    try:
+        circles = np.uint16(np.around(circles))
+        for i in circles[0,:]:
+                # draw the outer circle
+                cv2.circles(img,(i[0],i[1]),i[2],(0,255,0),2)
+                # draw the center of the circle
+                cv2.circles(cimg,(i[0],i[1]),2,(0,0,255),3)
+        return None
+    except:
+        print('No circles found in image: ')
+
+
+
 def video_export_v2(output_img_folder,images,filename):
     
     cwd = os.getcwd()
