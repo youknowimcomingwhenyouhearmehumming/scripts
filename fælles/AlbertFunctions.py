@@ -24,6 +24,7 @@ def img_marked_saver(img_folder,image_format,img_No, img):
         return True
     except:
         os.chdir(cwd)
+        print('Could not save image')
         return False
 
 def ball_drift(center, previouscenter, threshold):
@@ -67,6 +68,27 @@ def video_export_v1(output_img_folder,image_format,sort):
     except:
         return None
 
+
+#Parameters:	
+#image – 8-bit, single-channel, grayscale input image.
+#circles – Output vector of found circles. Each vector is encoded as a 3-element floating-p                                                                                    oint vector (x, y, radius) .
+#circle_storage – In C function this is a memory storage that will contain the output sequence of found circles.
+#method – Detection method to use. Currently, the only implemented method is CV_HOUGH_GRADIENT , which is basically 21HT , described in [Yuen90].
+#dp – Inverse ratio of the accumulator resolution to the image resolution. For example, if dp=1 , the accumulator has the same resolution as the input image. If dp=2 , the accumulator has half as big width and height.
+
+#for filename in glob.glob("*.png"): # This line take all the files of the filename .png from the current folder. Source http://stackoverflow.com/questions/6997419/how-to-create-a-loop-to-read-several-images-in-a-python-script
+# if you want sort files according to the digits included in the filename, you can do as following:
+#files = sorted(files, key=lambda x:float(re.findall("(\d+)",x)[0]))
+
+#HoughCircles params:
+#minDist – Minimum distance between the centers of the detected circles. If the parameter is too small, multiple neighbor circles may be falsely detected in addition to a true one. If it is too large, some circles may be missed.
+#param1 – First method-specific parameter. In case of CV_HOUGH_GRADIENT , it is the higher threshold of the two passed to the Canny() edge detector (the lower one is twice smaller).
+#param2 – Second method-specific parameter. In case of CV_HOUGH_GRADIENT , it is the accumulator threshold for the circle centers at the detection stage. The smaller it is, the more false circles may be detected. Circles, corresponding to the larger accumulator values, will be returned first.
+#minRadius – Minimum circle radius.
+#maxRadius – Maximum circle radius
+
+#For basement pictures in TestDrone640 use minRadius=5,maxRadius=30, param1 = 500, param2 = 9,minDist=500)
+#For  pica 30 use: param1=500,param2=9,minRadius=5,maxRadius=15) 
 def h_circles(img, blur,params):
     try:
         img = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -74,7 +96,7 @@ def h_circles(img, blur,params):
             img = cv2.GaussianBlur(img,(3,3),0)
         if params == []:
             params=[500, 200, 5, 15, 80]        
-            print("No params provided")
+#            print("No params provided")
         circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,minDist=params[0],param1=params[1],param2=params[2],minRadius=params[3],maxRadius=params[4])
         return circles
     except:
@@ -91,7 +113,7 @@ def draw_circles(img, circ):
       return img
     except:
         print('No circles found in image: ')
-        return None
+        return img
 
 
 
