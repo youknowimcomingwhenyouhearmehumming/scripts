@@ -22,7 +22,7 @@ while True:
   j+=1
   if j%1==0:
      i=i+1
-     cv2.imwrite('video4_'+str(i)+'.png',img);
+     cv2.imwrite('video_'+str(i)+'.png',img);
 #  if k%256==27:
 #    break
 

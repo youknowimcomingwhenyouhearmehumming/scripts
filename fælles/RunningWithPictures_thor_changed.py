@@ -2,6 +2,9 @@
 
 import cv2, os, numpy as np
 import AlbertFunctions as AF
+import ThorFunctions as TH
+import glob 
+from PIL import Image
 
 #Defining input/output folders and image format
 input_img_folder=r'C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video4_as_pic'
@@ -54,33 +57,94 @@ counter = 0
 
 counter=0
 
-for file in files:    
-    os.chdir(input_img_folder)
-    cimg = cv2.imread(file,cv2.IMREAD_UNCHANGED)
-#    if cimg.shape[0] != 480:
-#        cimg = cv2.resize(cimg, (640,480))
-#    cimg = AF.rotateImage(cimg,180)
-    img = cv2.cvtColor(cimg,cv2.COLOR_BGR2GRAY)
-    img = cv2.GaussianBlur(img,(11,11),0)
-    #img = cv2.erode(img, None, iterations=1)
-    #img = cv2.dilate(img, None, iterations=1)
+os.chdir(input_img_folder)
 
-    #Find circles
-    circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,minDist=minDist,param1=param1,param2=param2,minRadius=minRadius,maxRadius=maxRadius)
-    
+
+for file in glob.glob("*.png"): # This line take all the files of the filename .png from the current folder. Source http://stackoverflow.com/questions/6997419/how-to-create-a-loop-to-read-several-images-in-a-python-script
+#    col=Image.open(filename)
+
+#for file in files:    
     counter+=1
     if counter>90:
         break 
-    try:
-        circles = np.uint16(np.around(circles))
-        for i in circles[0,:]:
+    print(file)
+#    cimg = cv2.imread(file,1)
+#
+##img_RGB= cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+##        
+##    cimg = cv2.imread((file),cv2.IMREAD_UNCHANGED)
+##    print(file)
+#    img= cv2.cvtColor(cimg, cv2.COLOR_BGR2RGB)
+    try:        
+    #plt.figure('original')
+    #imgplot = plt.imshow(img_RGB)
+        img_blurred = cv2.GaussianBlur(img, (11, 11), 0)
+    #hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
+    #cv2.imshow('hsv',hsv)
+    #plt.figure('HSV')
+    #hsv_rgb = cv2.cvtColor(hsv, cv2.COLOR_BGR2HSV)
+    #imgplot = plt.imshow(hsv_rgb)
+    
+    
+        circles_h=TH.h_method(img_blurred,1,150,130,14,5,40)
+        circles_s=s_method(img_blurred,1,150,130,15,5,40)
+        circles_v=v_method(img_blurred,1,150,150,15,5,40)
+        circles_gray=gray_method(str(file),1,150,200,10,10,40)
+    
+    
+        all_pos_x,all_pos_y,all_radius=concatenate_results(method1=circles_h,method2=circles_s,method3=circles_v,method4=circles_gray)
+    
+        
+    #    all_pos_valid_oldpos_x=Discard_if_too_far_from_old_pos(all_pos=all_pos_x,oldpos=260,thres_oldpos=50)
+    #    all_pos_valid_oldpos_y=Discard_if_too_far_from_old_pos(all_pos=all_pos_y,oldpos=248,thres_oldpos=50)
+    #    all_radius_valid_old=Discard_if_too_far_from_old_pos(all_pos=all_radius,oldpos=12,thres_oldpos=10)
+    #    
+    
+    
+        avg_pos_x_final=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_pos_x,thres_avg_pos=30)
+        avg_pos_y_final=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_pos_y,thres_avg_pos=30)
+        avg_radius_final=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_radius,thres_avg_pos=10)
+        
+    
+    
+        print('avgpos_x',avg_pos_x_final)
+        print('avgpos_y',avg_pos_y_final)
+        print('avg_radius_final',avg_radius_final)
+    
+    #"""
+    #lav et plot på bilelde med alle de muligede position og så avg_final
+    #"""
+    
+        avg_all_final=np.concatenate((int(avg_pos_x_final),int(avg_pos_y_final),int(avg_radius_final)), axis=None)
+        #avg_all=np.concatenate((all_pos_x,all_pos_y,all_radius), axis=2)
+        avg_all=np.vstack((all_pos_x,all_pos_y,all_radius)).T
+    
+        avg_all = np.uint16(np.around(avg_all))
+        for i in avg_all[:]:
             # draw the outer circle
-            cv2.circle(cimg,(i[0],i[1]),i[2],(0,255,0),2)
+            cv2.circle(img,(i[0],i[1]),i[2],(0,255,0),12)
             # draw the center of the circle
-            cv2.circle(cimg,(i[0],i[1]),2,(0,0,255),3)
-            consec_balls_found = consec_balls_found + 1
-            if consec_balls_found > minConsecBallsFound:
-                flag_BallFound = True
+            cv2.circle(img,(i[0],i[1]),2,(0,0,255),8)
+        
+        cv2.circle(img,(avg_all_final[0],avg_all_final[1]),avg_all_final[2],(255,0,0),12)
+        # draw the center of the circle
+        cv2.circle(img,(avg_all_final[0],avg_all_final[1]),2,(255,255,0),8)
+        
+        cimg = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+    #plt.figure('avg_all')
+    #imgplot = plt.imshow(cimg)
+    
+
+    #    try:
+    #        circles = np.uint16(np.around(circles))
+    #        for i in circles[0,:]:
+    #            # draw the outer circle
+    #            cv2.circle(cimg,(i[0],i[1]),i[2],(0,255,0),2)
+    #            # draw the center of the circle
+    #            cv2.circle(cimg,(i[0],i[1]),2,(0,0,255),3)
+    #            consec_balls_found = consec_balls_found + 1
+    #            if consec_balls_found > minConsecBallsFound:
+    #                flag_BallFound = True
     except:
         print('No circles found in image: ',file)
         flag_BallFound = False 
@@ -90,18 +154,23 @@ for file in files:
         AF.img_marked_saver(output_img_folder,image_format,img_No,cimg)
     except:
         print('Could not save image')
+    
     img_No= img_No + 1
-    img_marked.append(cimg)
+    try:
+        img_marked.append(cimg)
+    except:
+#        img_marked.append(img)
+        pass
 #    cv2.imshow('output',cimg)
 #    cv2.waitKey(0)
     
-cv2.imshow('output',cimg)
-#Close windows
-#cv2.waitKey(0)
-cv2.destroyAllWindows()
+#cv2.imshow('output',cimg)
+##Close windows
+##cv2.waitKey(0)
+#cv2.destroyAllWindows()
 
 #Make a video
 #AF.video_export_v1(output_img_folder,image_format,True)
 
 #os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video4_output')
-print(AF.video_export_v2(output_img_folder,img_marked))
+AF.video_export_v2(output_img_folder,img_marked)
