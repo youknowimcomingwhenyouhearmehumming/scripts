@@ -98,6 +98,7 @@ def h_circles(img, blur,params):
             params=[500, 200, 5, 15, 80]        
 #            print("No params provided")
         circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,minDist=params[0],param1=params[1],param2=params[2],minRadius=params[3],maxRadius=params[4])
+        circles = circles.astype(int)
         return circles
     except:
         return None
@@ -144,7 +145,7 @@ def colourmask(img,colour):
 #For example gimp uses H = 0-360, S = 0-100 and V = 0-100. 
 #But OpenCV uses H: 0-179, S: 0-255, V: 0-255. Here i got a hue value of 22 in gimp.
 #So I took half of it, 11, and defined range for that. ie (5,50,50) - (15,255,255).
-    masked_img=[]
+#    masked_img=[]
     try:
         img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         if colour == 'red':
@@ -176,6 +177,15 @@ def colourmask(img,colour):
         
     except:
         return None
+
+def search_box(img,center,size):
+  return img[center[0]-size:center[0]+size,center[1]-size:center[1]+size,:]
+
+
+# ========================================================================#
+#TBD
+def ball_dist(radius,ballsize):
+  return(radius)
 
 
 #https://stackoverflow.com/questions/4623446/how-do-you-sort-files-numerically

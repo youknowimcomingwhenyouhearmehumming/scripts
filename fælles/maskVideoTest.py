@@ -22,9 +22,10 @@ cap = cv2.VideoCapture((path_to_video+r"/"+name))
 #ananda phone
 #camMatrix = np.array( [[630.029356,   0 , 317.89685204], [  0.  ,  631.62683668 ,242.01760626], [  0.  ,  0.,   1.  ]] )
 #distCoefs =  np.array([ 0.318628685 ,-2.22790350 ,-0.00156275882 ,-0.00149764901,  4.84589387])
-
+size = 600
 circles = []
 frames = 0
+ball_found = False
 
 while cap.isOpened() :
 
@@ -32,6 +33,8 @@ while cap.isOpened() :
 
     ret, org_img = cap.read()
     org_img = AF.rotateImage(org_img,180)
+    if ball_found:
+      AF.search_box(org_img,[250,250],250)
     
     if not ret:
         break
