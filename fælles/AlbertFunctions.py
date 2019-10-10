@@ -74,20 +74,21 @@ def h_circles(img, blur,params):
             img = cv2.GaussianBlur(img,(3,3),0)
         if params == []:
             params=[500, 200, 5, 15, 80]        
+            print("No params provided")
         circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,minDist=params[0],param1=params[1],param2=params[2],minRadius=params[3],maxRadius=params[4])
         return circles
     except:
         return None
 
-def draw_circles(img, circles):
+def draw_circles(img, circ):
     try:
-        circles = np.uint16(np.around(circles))
-        for i in circles[0,:]:
-                # draw the outer circle
-                cv2.circles(img,(i[0],i[1]),i[2],(0,255,0),2)
-                # draw the center of the circle
-                cv2.circles(cimg,(i[0],i[1]),2,(0,0,255),3)
-        return img
+      circ = np.uint16(np.around(circ))
+      for i in circ[0,:]:
+              # draw the outer circle
+              cv2.circle(img,(i[0],i[1]),i[2],(0,255,0),2)
+              # draw the center of the circle
+              cv2.circle(img,(i[0],i[1]),2,(0,0,255),3)
+      return img
     except:
         print('No circles found in image: ')
         return None
@@ -99,22 +100,22 @@ def video_export_v2(output_img_folder,images,filename):
     cwd = os.getcwd()
     os.chdir(output_img_folder)
     img_array = []
-    try:
-        for img in images:
-            height, width, layer = img.shape 
-            size = (width,height)
-            img_array.append(img)
-        out = cv2.VideoWriter(filename,cv2.VideoWriter_fourcc(*'DIVX'), 15, size)
-        
-        for i in range(len(img_array)):
-            out.write(img_array[i])
-        out.release()
-        print(cwd)
-        os.chdir(cwd)
-        return True
-    except:
-        os.chdir(cwd)           
-        return None
+#    try:
+    for img in images:
+        height, width, layer = img.shape 
+        size = (width,height)
+        img_array.append(img)
+    out = cv2.VideoWriter(filename,cv2.VideoWriter_fourcc(*'DIVX'), 15, size)
+    
+    for i in range(len(img_array)):
+        out.write(img_array[i])
+    out.release()
+    print(cwd)
+    os.chdir(cwd)
+    return True
+#    except:
+#        os.chdir(cwd)           
+#        return None
 
 def colourmask(img,colour):
 #Different applications use different scales for HSV. 
