@@ -154,21 +154,26 @@ def colourmask(img,colour):
             high_red2 = np.array([179, 255, 255])
             red_mask1 = cv2.inRange(img_hsv, low_red1, high_red1)
             red_mask2 = cv2.inRange(img_hsv, low_red2, high_red2)
-            masked_img1 = cv2.bitwise_and(img, img, mask=red_mask1)
-            masked_img2 = cv2.bitwise_and(img, img, mask=red_mask2)
-            masked_img = cv2.bitwise_or(masked_img1, masked_img2)
-            
+#            masked_img1 = cv2.bitwise_and(img, img, mask=red_mask1)
+#            masked_img2 = cv2.bitwise_and(img, img, mask=red_mask2)
+#            masked_img = cv2.bitwise_or(masked_img1, masked_img2)            
+#            return masked_img
+            return cv2.bitwise_or(red_mask1,red_mask2)
         elif colour == 'green':
             low_green = np.array([38, 50, 50])
             high_green = np.array([75, 255, 255])
             green_mask = cv2.inRange(img_hsv, low_green, high_green)
-            masked_img = cv2.bitwise_and(img, img, mask=green_mask)
+#            masked_img = cv2.bitwise_and(img, img, mask=green_mask)
+#            return masked_img
+            return green_mask
         elif colour == 'blue':
             low_blue = np.array([94, 80, 2])
             high_blue = np.array([126, 255, 255])
             blue_mask = cv2.inRange(img_hsv, low_blue, high_blue)
-            masked_img = cv2.bitwise_and(img, img, mask=blue_mask)
-        return masked_img
+#            masked_img = cv2.bitwise_and(img, img, mask=blue_mask)
+#            return masked_img
+            return blue_mask
+        
     except:
         return None
 
