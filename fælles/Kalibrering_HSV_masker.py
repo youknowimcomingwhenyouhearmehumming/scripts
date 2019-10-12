@@ -15,17 +15,17 @@ def colourmask(img,colour):
     try:
         img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         if colour == 'red':
-            low_red1 = np.array([0, 100, 20])
-            high_red1 = np.array([0, 255, 255])
-            low_red2 = np.array([172, 100, 20])
-            high_red2 = np.array([179, 255, 255])
+            low_red1 = np.array([174, 100, 20])
+            high_red1 = np.array([179, 255, 255])
+#            low_red2 = np.array([0, 100, 20])
+#            high_red2 = np.array([0, 255, 255])
             red_mask1 = cv2.inRange(img_hsv, low_red1, high_red1)
-            red_mask2 = cv2.inRange(img_hsv, low_red2, high_red2)
+#            red_mask2 = cv2.inRange(img_hsv, low_red2, high_red2)
 #            masked_img1 = cv2.bitwise_and(img, img, mask=red_mask1)
 #            masked_img2 = cv2.bitwise_and(img, img, mask=red_mask2)
 #            masked_img = cv2.bitwise_or(masked_img1, masked_img2)            
-#            return masked_img
-            return cv2.bitwise_or(red_mask1,red_mask2)
+            return red_mask1
+#            return cv2.bitwise_or(red_mask1,red_mask2)
         elif colour == 'green':
             low_green = np.array([38, 50, 50])
             high_green = np.array([75, 255, 255])
@@ -48,14 +48,13 @@ plt.close()
 cv2.destroyAllWindows()
 
 os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video1_as_pic')
-file_name_of_picture='video_10.png'   #'pica33.png'
+file_name_of_picture='video_24.png'   #'pica33.png'
 #
 #os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video4_as_pic')
 #file_name_of_picture='video_1181.png'   #'pica33.png'
 
 
 img = cv2.imread(file_name_of_picture,1)
-
 
 
 img_RGB= cv2.cvtColor(img, cv2.COLOR_BGR2RGB)

@@ -5,8 +5,8 @@ import ThorFunctions as TH
 
 
 #Defining input/output folders and image format
-input_img_folder=r"C:\Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video4_as_pic"
-output_img_folder=r"C:\Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video4_output"
+input_img_folder=r"C:\Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video1_as_pic"
+output_img_folder=r"C:\Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video1_output"
 start_folder=r"C:\Users\JAlbe\OneDrive\Drone projekt\Scripts\scripts\fælles"
 image_format = '.png'
 #First, get the files:
@@ -43,7 +43,7 @@ for file in files:
         img = cv2.imread((input_img_folder+r"/"+file),cv2.IMREAD_UNCHANGED)
   
     
-        img_red_mask=AF.colourmask(img,'red')
+        img_red_mask=TH.colourmask(img,'red')
         
     except:
         print('No circles found in image: ',file)

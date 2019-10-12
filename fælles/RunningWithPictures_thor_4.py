@@ -49,7 +49,7 @@ for file in files:
         #img = cv2.erode(img, None, iterations=1)
         #img = cv2.dilate(img, None, iterations=1)
     
-    
+#        img_mask=TH.colourmask(img,'red')
         circles_h=TH.h_method(img,1,50,30,15,2,15)
         circles_s=TH.s_method(img,1,100,200,22,3,20)
         circles_v=TH.v_method(img,1,50,150,11,2,15)

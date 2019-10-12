@@ -235,6 +235,43 @@ def Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos,thres_avg_pos):
     return np.round(avg_pos)
 
 
+def colourmask(img,colour):
+#Different applications use different scales for HSV. 
+#For example gimp uses H = 0-360, S = 0-100 and V = 0-100. 
+#But OpenCV uses H: 0-179, S: 0-255, V: 0-255. Here i got a hue value of 22 in gimp.
+#So I took half of it, 11, and defined range for that. ie (5,50,50) - (15,255,255).
+#    masked_img=[]
+    try:
+        img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        if colour == 'red':
+            low_red1 = np.array([174, 100, 20])
+            high_red1 = np.array([179, 255, 255])
+#            low_red2 = np.array([0, 100, 20])
+#            high_red2 = np.array([0, 255, 255])
+            red_mask1 = cv2.inRange(img_hsv, low_red1, high_red1)
+#            red_mask2 = cv2.inRange(img_hsv, low_red2, high_red2)
+#            masked_img1 = cv2.bitwise_and(img, img, mask=red_mask1)
+#            masked_img2 = cv2.bitwise_and(img, img, mask=red_mask2)
+#            masked_img = cv2.bitwise_or(masked_img1, masked_img2)            
+            return red_mask1
+#            return cv2.bitwise_or(red_mask1,red_mask2)
+        elif colour == 'green':
+            low_green = np.array([38, 50, 50])
+            high_green = np.array([75, 255, 255])
+            green_mask = cv2.inRange(img_hsv, low_green, high_green)
+#            masked_img = cv2.bitwise_and(img, img, mask=green_mask)
+#            return masked_img
+            return green_mask
+        elif colour == 'blue':
+            low_blue = np.array([94, 80, 2])
+            high_blue = np.array([126, 255, 255])
+            blue_mask = cv2.inRange(img_hsv, low_blue, high_blue)
+#            masked_img = cv2.bitwise_and(img, img, mask=blue_mask)
+#            return masked_img
+            return blue_mask
+        
+    except:
+        return None
 #
 #os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video4_as_pic')
 #file_name_of_picture='video4_1211.png'   #'pica33.png'
