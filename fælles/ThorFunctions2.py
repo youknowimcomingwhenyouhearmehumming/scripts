@@ -273,10 +273,15 @@ def colourmask(img,colour):
     except:
         return None
 
-def BLOB(img):
-    element = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3,3)) 
+def PreProcessing(img):
+    element = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9,9)) 
     eroded = cv2.erode(img, element, iterations=3)
-    dilated = cv2.dilate(eroded, element, iterations=10)
+    dilated = cv2.dilate(eroded, element, iterations=3)
+    blurred = cv2.GaussianBlur(dilated, (11, 11), 0)  
+
+    return blurred
+    
+def BLOB(img):
     
     # blob detection
     params = cv2.SimpleBlobDetector_Params()
@@ -316,78 +321,8 @@ def BLOB(img):
 
     all_pos=np.vstack((all_pos_x,all_pos_y)).T
     
-    return all_pos, dilated
+    return all_pos
         
-        
-#
-#os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video4_as_pic')
-#file_name_of_picture='video4_1211.png'   #'pica33.png'
-##
-##os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/outdoor')
-##file_name_of_picture='pica36.png'   #'pica33.png'
-#
-#
-#img = cv2.imread(file_name_of_picture,1)
-#
-#plt.close()
-#
-#
-#img_RGB= cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-#plt.figure('original')
-#imgplot = plt.imshow(img_RGB)
-#blurred = cv2.GaussianBlur(img, (11, 11), 0)
-#hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
-#cv2.imshow('hsv',hsv)
-#plt.figure('HSV')
-#hsv_rgb = cv2.cvtColor(hsv, cv2.COLOR_BGR2HSV)
-#imgplot = plt.imshow(hsv_rgb)
-#
-#
-#circles_h=h_method(img,1,150,130,14,5,40)
-#circles_s=s_method(img,1,150,130,15,5,40)
-#circles_v=v_method(img,1,150,150,15,5,40)
-#circles_gray=gray_method(file_name_of_picture,1,150,200,10,10,40)
-#
-#
-#all_pos_x,all_pos_y,all_radius=concatenate_results(method1=circles_h,method2=circles_s,method3=circles_v,method4=circles_gray)
-#
-#
-#all_pos_valid_oldpos_x=Discard_if_too_far_from_old_pos(all_pos=all_pos_x,oldpos=260,thres_oldpos=50)
-#all_pos_valid_oldpos_y=Discard_if_too_far_from_old_pos(all_pos=all_pos_y,oldpos=248,thres_oldpos=50)
-#all_radius_valid_old=Discard_if_too_far_from_old_pos(all_pos=all_radius,oldpos=12,thres_oldpos=10)
-#
-#
-#
-#avg_pos_x=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_pos_valid_oldpos_x,thres_avg_pos=10)
-#avg_pos_y=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_pos_valid_oldpos_y,thres_avg_pos=10)
-#avg_radius=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_radius_valid_old,thres_avg_pos=5)
-#
-#
-#
-#print('avgpos_x',avg_pos_x)
-#print('avgpos_y',avg_pos_y)
-#print('avg_radius',avg_radius)
-#
-#"""
-#lav et plot på bilelde med alle de muligede position og så avg
-#"""
-#
-#avg_all=np.concatenate((int(avg_pos_x),int(avg_pos_y),int(avg_radius)), axis=None)
-##avg_all=np.concatenate((all_pos_x,all_pos_y,all_radius), axis=2)
-#avg_all=np.vstack((all_pos_x,all_pos_y,all_radius)).T
-#
-#avg_all = np.uint16(np.around(avg_all))
-#for i in avg_all[:]:
-#    # draw the outer circle
-#    cv2.circle(img,(i[0],i[1]),i[2],(0,255,0),12)
-#    # draw the center of the circle
-#    cv2.circle(img,(i[0],i[1]),2,(0,0,255),8)
-#
-#cv2.circle(img,(avg_all[0],avg_all[1]),avg_all[2],(255,0,0),12)
-## draw the center of the circle
-#cv2.circle(img,(avg_all[0],avg_all[1]),2,(255,255,0),8)
-#    
-#cimg = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
-#plt.figure('avg_all')
-#imgplot = plt.imshow(cimg)
+
+
 

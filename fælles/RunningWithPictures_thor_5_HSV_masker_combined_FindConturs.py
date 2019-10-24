@@ -1,6 +1,6 @@
 import cv2, os, numpy as np
 import AlbertFunctions as AF
-import ThorFunctions as TH
+import ThorFunctions2 as TH
 
 
 
@@ -45,26 +45,26 @@ for file in files:
         
         red_mask=TH.colourmask(img,'red')
         
-        BLOB_pos,BLOB_dilated_img=TH.BLOB(red_mask)
+        red_mask_pp=TH.PreProcessing(red_mask)
+
+
+        red_mask_pp_marked_three_channels = cv2.cvtColor(red_mask_pp,cv2.COLOR_GRAY2RGB) 
         
     
-#        red_mask_marked=np.copy(red_mask)
-        red_mask_marked_three_channels = cv2.cvtColor(red_mask,cv2.COLOR_GRAY2RGB) 
         
-        BLOB_pos = np.uint16(np.around(BLOB_pos))
-        for i in BLOB_pos[:]:
+        Hough_pos = cv2.HoughCircles(red_mask_pp,cv2.HOUGH_GRADIENT,dp=1,minDist=100,param1=400,param2=13,minRadius=3,maxRadius=50) 
+
+        Hough_pos = np.uint16(np.around(Hough_pos))
+        for i in Hough_pos[0,:]:
             # draw the outer circle
-    #            cv2.circle(img,(i[0],i[1]),i[2],(0,255,0),12)
+            cv2.circle(img,(i[0],i[1]),i[2],(0,255,0),12)
+            cv2.circle(red_mask_pp_marked_three_channels,(i[0],i[1]),i[2],(0,255,0),12)
             # draw the center of the circle
-            cv2.circle(img,(i[0],i[1]),2,(0,255,0),10)
-            cv2.circle(red_mask_marked_three_channels,(i[0],i[1]),2,(0,255,0),10)
-        
-    #        cv2.circle(img,(avg_all[0],avg_all[1]),avg_all[2],(255,0,0),12)
-        # draw the center of the circle
-    #        cv2.circle(img,(avg_all[0],avg_all[1]),2,(255,255,0),8)
-    #            consec_balls_found = consec_balls_found + 1
-    #            if consec_balls_found > minConsecBallsFound:
-    #                flag_BallFound = True
+            cv2.circle(img,(i[0],i[1]),2,(0,0,255),8)
+            cv2.circle(red_mask_pp_marked_three_channels,(i[0],i[1]),2,(0,0,255),8)
+
+                
+                
     except: 
         print('No circles found in image: ',file)
 #        flag_BallFound = False 
@@ -79,10 +79,10 @@ for file in files:
 #    img_marked.append(img)
     
     red_mask_three_channels = cv2.cvtColor(red_mask,cv2.COLOR_GRAY2RGB) 
-    dilated_three_channels = cv2.cvtColor(BLOB_dilated_img,cv2.COLOR_GRAY2RGB) 
+    red_mask_marked_three_channels = cv2.cvtColor(red_mask_pp,cv2.COLOR_GRAY2RGB) 
 #    print(np.shape(img),np.shape(red_mask_three_channels))
     show_1 = np.hstack( ( img, red_mask_three_channels ) )
-    show_2 = np.hstack( ( dilated_three_channels, red_mask_marked_three_channels ) )
+    show_2 = np.hstack( ( red_mask_pp_marked_three_channels, red_mask_marked_three_channels ) )
     show_all = np.vstack( (show_1, show_2) )
     
     cv2.putText(show_all, file, (200,900), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0))

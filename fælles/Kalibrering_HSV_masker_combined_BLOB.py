@@ -12,7 +12,7 @@ import ThorFunctions as TH
 cv2.destroyAllWindows()
 
 os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video1_as_pic')
-img = cv2.imread('video_300.png' )
+img = cv2.imread('video_574.png' )
 
 #img = cv2.imread('blob.jpg')
 #gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -49,7 +49,7 @@ params.filterByColor = False
 params.blobColor = 0
 #params.minThreshold = 14
 #params.maxThreshold = 25
-params.minDistBetweenBlobs=1000
+params.minDistBetweenBlobs=10
 params.filterByArea = True
 params.minArea = 20
 params.maxArea = 100000
@@ -85,12 +85,13 @@ i = 0
 for kp in keypts:
     print("(%f,%f)"%(kp.pt[0],kp.pt[1]))
     i+=1
+    print(i)
     cv2.rectangle(res,(int(kp.pt[0]),int(kp.pt[1])),(int(kp.pt[0])+1,int(kp.pt[1])+1),(0,255,0),2)
     x_pos.append(int(np.round(kp.pt[0])))
     y_pos.append(int(np.round(kp.pt[1])))
 
 #cv2.imshow("Keypoints", im_with_keypoints)
-cv2.imshow("RES", res)
+cv2.imshow("RESULT", res)
 #cv2.imshow("adap_thresh", adap_thresh)
 #cv2.waitKey(0)
 
