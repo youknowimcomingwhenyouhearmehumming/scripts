@@ -54,7 +54,8 @@ while cap.isOpened() :
     h_img = AF.draw_circles(org_img,circles)
     frames += 1
     try:
-        box = AF.search_box(org_img,[circles[0][0]],250)
+        print(circles[0][0])
+        box = AF.search_box(org_img,circles[0][0][0:1],250)
         cv2.imshow('1', box)
     except:
         pass
