@@ -115,9 +115,7 @@ def draw_circles(img, circ):
     except:
         print('No circles found in image: ')
         return img
-
-
-
+        
 def video_export_v2(output_img_folder,images,filename):
     
     cwd = os.getcwd()
