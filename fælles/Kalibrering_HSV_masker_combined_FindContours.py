@@ -45,8 +45,49 @@ imgplot = plt.imshow(red_mask_pp)
 
 #im_gauss = cv2.GaussianBlur(imgray, (5, 5), 0)
 ret, thresh = cv2.threshold(red_mask_pp, 1, 255, 0)
-# get contours
-contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+#contours,hierarchy  = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+#New lines added from pyimage
+contours = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
+	cv2.CHAIN_APPROX_SIMPLE)
+contours = imutils.grab_contours(contours)
+c = max(contours, key=cv2.contourArea)
+
+
+	
+# determine the most extreme points along the contour
+extLeft = tuple(c[c[:, :, 0].argmin()][0])
+extRight = tuple(c[c[:, :, 0].argmax()][0])
+extTop = tuple(c[c[:, :, 1].argmin()][0])
+extBot = tuple(c[c[:, :, 1].argmax()][0])
+
+diameter1=TH.calculateDistance(extLeft,extRight)
+diameter2=TH.calculateDistance(extTop,extBot)
+
+cnt = contours[0]
+M = cv2.moments(cnt)
+cx = int(M['m10']/M['m00'])
+cy = int(M['m01']/M['m00'])
+        
+(x,y),radius = cv2.minEnclosingCircle(cnt)
+center_new = (int(x),int(y))
+radius_new  = int(radius)
+
+
+
+if diameter1 >= diameter2:
+    radius=np.round(diameter1/2)
+else:
+    radius=np.round(diameter2/2)
+
+#Only if you want to draw the extrema
+cv2.drawContours(img, [c], -1, (0, 255, 255), 2)
+cv2.circle(img, extLeft, 8, (0, 0, 255), -1)
+cv2.circle(img, extRight, 8, (0, 255, 0), -1)
+cv2.circle(img, extTop, 8, (255, 0, 0), -1)
+cv2.circle(img, extBot, 8, (255, 255, 0), -1)
+ 
+
 
 contours_area = []
 # calculate area and filter into new array
@@ -70,6 +111,8 @@ for con in contours_area:
     if 0.1 < circularity < 1.2:
         contours_cirles.append(con)
         
+
+
         
 cv2.drawContours(img, contours_cirles, -1, (0, 255, 0), 3) 
   
