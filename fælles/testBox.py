@@ -14,6 +14,7 @@ import imutils
 
 #name = 'ball_track.mp4'
 path_to_video = r"C:\Users\JAlbe\OneDrive\Drone projekt\Data"
+path_to_video = r"C:\Users\JAlbe\Documents\GitHub\Data"
 name = "flight4_red.mp4"
 #name = '358_ball_lost.mp4'
 
@@ -53,11 +54,15 @@ while cap.isOpened() :
     circles = AF.h_circles(org_img, True ,[])
     h_img = AF.draw_circles(org_img,circles)
     frames += 1
-    try:
-        box = AF.search_box(org_img,[circles[0][0]],250)
+    print(circles[0][0])
+    print(circles[0][0][0])
+    print(circles[0][0][1])
+#    try:
+    if(circles.any()):
+        box = AF.search_box(h_img,circles[0][0][0],circles[0][0][1],30)
         cv2.imshow('1', box)
-    except:
-        pass
+#    except:
+#        pass
     #Show er ikke talt med i computational tid, da de ikke skal bruges når
     #det køres på dronen
     end_time = time.time()
@@ -88,10 +93,11 @@ while cap.isOpened() :
 
 #    cv2.imshow('Result', show_f)
     
-    
+    cv2.imshow('full', h_img)
     #cv2.imshow('2', show_2)
-
+    cv2.waitKey(0)
     if( cv2.waitKey( 1 ) & 0xFF == ord('q') ):
+        cv2.destroyAllWindows()
         break;
 
 print("Number of frames in the video: " + str(frames))

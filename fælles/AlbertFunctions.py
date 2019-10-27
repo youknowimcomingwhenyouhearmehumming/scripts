@@ -176,8 +176,9 @@ def colourmask(img,colour):
     except:
         return None
 
-def search_box(img,center,size):
-  return img[center[0]-size:center[0]+size,center[1]-size:center[1]+size,:]
+def search_box(img,x,y,size):
+    print(x,y)
+    return img[x-size:x+size,y-size:y+size,:]
 
 
 # ========================================================================#
