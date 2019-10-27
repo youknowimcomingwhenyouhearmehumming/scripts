@@ -148,11 +148,14 @@ def colourmask(img,colour):
         img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         if colour == 'red':
             low_red1 = np.array([0, 200, 50])
-            high_red1 = np.array([10, 255, 255])
+#            high_red1 = np.array([10, 255, 255])
+            high_red1 = np.array([20, 255, 255])
             low_red2 = np.array([175, 200, 50])
             high_red2 = np.array([179, 255, 255])
             red_mask1 = cv2.inRange(img_hsv, low_red1, high_red1)
+#            cv2.imshow("red_lower",red_mask1)
             red_mask2 = cv2.inRange(img_hsv, low_red2, high_red2)
+#            cv2.imshow("red_higher",red_mask2)
 #            masked_img1 = cv2.bitwise_and(img, img, mask=red_mask1)
 #            masked_img2 = cv2.bitwise_and(img, img, mask=red_mask2)
 #            masked_img = cv2.bitwise_or(masked_img1, masked_img2)            
@@ -213,6 +216,14 @@ def search_box2(img,yxr,scale):
 #    print("xL: ",xL,"xH: ",xH,"yL: ",yL,"yH: ",yH)
     return b_img
 
+def search_colour(mask_img,box):
+#    test = np.random.randint(0,2,size=(box[0][1]-box[0][0],box[0][3]-box[0][2]))
+    print(box)
+    value = sum(mask_img[box[0]:box[1],box[2]:box[3]])
+    if(value > 100):
+        return True
+    else:
+        return False
 
 
 # ========================================================================#
