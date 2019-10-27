@@ -115,7 +115,20 @@ def draw_circles(img, circ):
     except:
         print('No circles found in image: ')
         return img
-        
+
+def draw_circles2(img, circ):
+    try:
+      circ = np.uint16(np.around(circ))
+      # draw the outer circle
+      cv2.circle(img,(circ[0],circ[1]),circ[2],(0,255,0),2)
+      # draw the center of the circle
+      cv2.circle(img,(circ[0],circ[1]),2,(0,0,255),3)
+      return img
+    except:
+        print('No circles found in image: ')
+        return img
+
+
 def video_export_v2(output_img_folder,images,filename):
     
     cwd = os.getcwd()
@@ -217,13 +230,8 @@ def search_box2(img,yxr,scale):
     return b_img
 
 def search_colour(mask_img,box):
-#    test = np.random.randint(0,2,size=(box[0][1]-box[0][0],box[0][3]-box[0][2]))
-    print(box)
-    value = sum(mask_img[box[0]:box[1],box[2]:box[3]])
-    if(value > 100):
-        return True
-    else:
-        return False
+    value = sum(sum(mask_img[box[0]:box[1],box[2]:box[3]]))
+    return value
 
 
 # ========================================================================#

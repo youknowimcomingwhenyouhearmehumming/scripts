@@ -57,30 +57,31 @@ while cap.isOpened() :
     if org_img.shape[0] != 480:
 #     cimg = cv2.resize(cimg, (640,480))
       org_img = imutils.resize(org_img,width = org_img.shape[0],height = org_img.shape[1])
-
+    h_img=org_img
     mask_img = AF.colourmask(org_img,"red")
     circles = AF.h_circles(org_img, True ,[])
 #    circles = AF.h_circles(mask_img, True ,[])
-    h_img = AF.draw_circles(org_img,circles)
+#    h_img = AF.draw_circles(org_img,circles)
     frames += 1
     for circ in range(circles.shape[1]):
         print("circ: ",circ)
-    if(AF.search_colour(mask_img,box[circ][:])==False and ball_found):
-        print("Colour wrong")
-#            box[circ] = AF.search_box1(h_img.shape,circles[0][circ][0],circles[0][circ][1],circles[0][circ][2]*1.2)
-    box[circ] = AF.search_box1(h_img.shape,circles[0][circ][:],1.2)
-    print("box: ",box)
-    print("end")
-
-    mask_img = AF.search_box2(mask_img,circles[0][circ][:],1.2)
-
-    cv2.imshow('full', h_img)
-    cv2.imshow('mask', mask_img)
-    ball_found = True
-    #Show er ikke talt med i computational tid, da de ikke skal bruges når
-    #det køres på dronen
-    end_time = time.time()
-    print("Time per frame: " + str(end_time-start_time))
+        box[circ] = AF.search_box1(h_img.shape,circles[0][circ][:],1.2)
+        box = box.astype(int)
+#        print("box: ",box)
+#        print("end")
+        value = AF.search_colour(mask_img,box[circ][:])
+        print(value)
+        if(value>255*10):
+            print("ball found")
+            mask_img = AF.search_box2(mask_img,circles[0][circ][:],1.2)
+            h_img = AF.draw_circles2(org_img,circles[0][circ][:])
+        cv2.imshow('full', h_img)
+        cv2.imshow('mask', mask_img)
+        ball_found = True
+        #Show er ikke talt med i computational tid, da de ikke skal bruges når
+        #det køres på dronen
+        end_time = time.time()
+        print("Time per frame: " + str(end_time-start_time))
     
     #Freq virker ikke, da der ikke er noget computational tid i øjeblikket,
     #Så den prøver at dividere med 0
