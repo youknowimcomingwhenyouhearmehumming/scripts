@@ -229,9 +229,9 @@ def search_box2(img,yxr,scale):
 #    print("xL: ",xL,"xH: ",xH,"yL: ",yL,"yH: ",yH)
     return b_img
 
-def search_colour(mask_img,box):
-    value = sum(sum(mask_img[box[0]:box[1],box[2]:box[3]]))
-    return value
+#def search_colour(mask_img,box):
+#    value = sum(sum(mask_img[box[0]:box[1],box[2]:box[3]]))
+#    return value
 
 
 # ========================================================================#
