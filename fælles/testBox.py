@@ -32,6 +32,7 @@ cap = cv2.VideoCapture((path_to_video+r"/"+name))
 #distCoefs =  np.array([ 0.318628685 ,-2.22790350 ,-0.00156275882 ,-0.00149764901,  4.84589387])
 size = 600
 circles = []
+box=np.zeros((10,4))
 frames = 0
 ball_found = False
 
@@ -51,18 +52,25 @@ while cap.isOpened() :
       org_img = imutils.resize(org_img,width = org_img.shape[0],height = org_img.shape[1])
 
     mask_img = AF.colourmask(org_img,"red")
-    circles = AF.h_circles(org_img, True ,[])
+#    circles = AF.h_circles(org_img, True ,[])
+    circles = AF.h_circles(mask_img, True ,[])
     h_img = AF.draw_circles(org_img,circles)
     frames += 1
-    print(circles[0][0])
-    print(circles[0][0][0])
-    print(circles[0][0][1])
-#    try:
-    if(circles.any()):
-        box = AF.search_box(h_img,circles[0][0][0],circles[0][0][1],30)
-        cv2.imshow('1', box)
-#    except:
-#        pass
+    try:
+        for circ in range(circles.shape[1]):
+    #        try:
+            print("circ: ",circ)
+    #        box[circ] = AF.search_box1(h_img.shape,circles[0][circ][0],circles[0][circ][1],circles[0][circ][2]*1.2)
+            box[circ] = AF.search_box1(h_img.shape,circles[0][circ][:],1.2)
+            print("box: ",box)
+            print("end")
+    #        except:
+    #            pass
+    #        try:
+            h_img = AF.search_box2(h_img,circles[0][circ][:],1.2)
+    #            cv2.imshow('2', box2)
+    except:
+        pass
     #Show er ikke talt med i computational tid, da de ikke skal bruges når
     #det køres på dronen
     end_time = time.time()
@@ -79,10 +87,10 @@ while cap.isOpened() :
     #gøres med flere imshows, men her hænger billedet sammen og skygger
     #ikke for hinanden
     
-    #img2_show = cv2.cvtColor(h_img,cv2.COLOR_BGR2GRAY)
+#    img2_show = cv2.cvtColor(h_img,cv2.COLOR_BGR2GRAY)
     
-    #show_1 = np.hstack( ( org_img, h_img ) )
-    #show_2 = np.hstack( ( mask_img, img2_show ) )
+#    show_1 = np.hstack( ( org_img, h_img ) )
+#    show_2 = np.hstack( ( mask_img,mask_img ) )
 
 #    show_f = np.vstack( (show_1, show_2) )
     
@@ -91,11 +99,12 @@ while cap.isOpened() :
 #    cv2.putText(show_f, text, (640,480), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255))
     
 
-#    cv2.imshow('Result', show_f)
+#    cv2.imshow('Result', show_1)
     
     cv2.imshow('full', h_img)
+    cv2.imshow('mask', mask_img)
     #cv2.imshow('2', show_2)
-    cv2.waitKey(0)
+#    cv2.waitKey(0)
     if( cv2.waitKey( 1 ) & 0xFF == ord('q') ):
         cv2.destroyAllWindows()
         break;
