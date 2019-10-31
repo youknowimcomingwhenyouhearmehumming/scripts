@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Sun Oct 27 14:30:19 2019
+
+@author: JAlbe
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Thu Oct 24 14:33:31 2019
 
 @author: JAlbe
@@ -16,6 +23,7 @@ import imutils
 path_to_video = r"C:\Users\JAlbe\OneDrive\Drone projekt\Data"
 path_to_video = r"C:\Users\JAlbe\Documents\GitHub\Data"
 name = "flight4_red.mp4"
+#name="Movie1.MOV"
 #name = '358_ball_lost.mp4'
 
 
@@ -41,43 +49,36 @@ while cap.isOpened() :
     start_time = time.time()
 
     ret, org_img = cap.read()
-    org_img = AF.rotateImage(org_img,180)
-    
-    
+#    org_img = AF.rotateImage(org_img,180)
     if not ret:
         break
       
     if org_img.shape[0] != 480:
 #     cimg = cv2.resize(cimg, (640,480))
       org_img = imutils.resize(org_img,width = org_img.shape[0],height = org_img.shape[1])
-
+    org_img
     mask_img = AF.colourmask(org_img,"red")
-#    circles = AF.h_circles(org_img, True ,[])
-    circles = AF.h_circles(mask_img, True ,[])
-    h_img = AF.draw_circles(org_img,circles)
+    circles = AF.h_circles(org_img, True ,[])
+#    circles = AF.h_circles(mask_img, True ,[])
+#    h_img = AF.draw_circles(org_img,circles)
     frames += 1
-    try:
-        print(circles[0][0])
-        box = AF.search_box(org_img,circles[0][0][0:1],250)
-        cv2.imshow('1', box)
-        for circ in range(circles.shape[1]):
-    #        try:
-            print("circ: ",circ)
-    #        box[circ] = AF.search_box1(h_img.shape,circles[0][circ][0],circles[0][circ][1],circles[0][circ][2]*1.2)
-            box[circ] = AF.search_box1(h_img.shape,circles[0][circ][:],1.2)
-            print("box: ",box)
-            print("end")
-    #        except:
-    #            pass
-    #        try:
-            h_img = AF.search_box2(h_img,circles[0][circ][:],1.2)
-    #            cv2.imshow('2', box2)
-    except:
-        pass
-    #Show er ikke talt med i computational tid, da de ikke skal bruges når
-    #det køres på dronen
-    end_time = time.time()
-    print("Time per frame: " + str(end_time-start_time))
+    for circ in range(circles.shape[1]):
+        print("circ: ",circ)
+        box[circ] = AF.search_box1(org_img.shape,circles[0][circ][:],1.2)
+        box = box.astype(int)
+#        print("box: ",box)
+#        print("end")
+        value = sum(sum(mask_img[box[circ][0]:box[circ][1],box[circ][2]:box[circ][3]]))        
+        if(value>255*20):
+            print("ball found")
+            mask_img = AF.search_box2(mask_img,circles[0][circ][:],1.2)
+            org_img = AF.draw_circles2(org_img,circles[0][circ][:])
+        end_time = time.time()
+        print("Time per frame: " + str(end_time-start_time))
+        cv2.imshow('full', org_img)
+        cv2.imshow('mask', mask_img)
+        ball_found = True
+
     
     #Freq virker ikke, da der ikke er noget computational tid i øjeblikket,
     #Så den prøver at dividere med 0
@@ -104,12 +105,11 @@ while cap.isOpened() :
 
 #    cv2.imshow('Result', show_1)
     
-    cv2.imshow('full', h_img)
-    cv2.imshow('mask', mask_img)
+    
     #cv2.imshow('2', show_2)
 #    cv2.waitKey(0)
     if( cv2.waitKey( 1 ) & 0xFF == ord('q') ):
-        cv2.destroyAllWindows()
+#        cv2.destroyAllWindowsq()
         break;
 
 print("Number of frames in the video: " + str(frames))
