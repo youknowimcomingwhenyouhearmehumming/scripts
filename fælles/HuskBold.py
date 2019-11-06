@@ -56,7 +56,6 @@ while cap.isOpened() :
     if org_img.shape[0] != 480:
 #     cimg = cv2.resize(cimg, (640,480))
       org_img = imutils.resize(org_img,width = org_img.shape[0],height = org_img.shape[1])
-    org_img
     mask_img = AF.colourmask(org_img,"red")
     circles = AF.h_circles(org_img, True ,[])
 #    circles = AF.h_circles(mask_img, True ,[])

@@ -113,7 +113,7 @@ def draw_circles(img, circ):
               cv2.circle(img,(i[0],i[1]),2,(0,0,255),3)
       return img
     except:
-        print('No circles found in image: ')
+#        print('No circles found in image: ')
         return img
 
 def draw_circles2(img, circ):
@@ -125,7 +125,7 @@ def draw_circles2(img, circ):
       cv2.circle(img,(circ[0],circ[1]),2,(0,0,255),3)
       return img
     except:
-        print('No circles found in image: ')
+#        print('No circles found in image: ')
         return img
 
 
@@ -191,6 +191,27 @@ def colourmask(img,colour):
         
     except:
         return None
+
+def getBoxLim(img,yxr,scale):
+#    print("img: ",img, "yxr: ",yxr)
+#    size=np.uint16(np.around(scale*yxr[2]))
+    size=int((np.around(scale*yxr[2])))
+    left = yxr[1]-size
+    right = yxr[1]+size
+    up = yxr[0]-size
+    down = yxr[0]+size
+    if(right>img[0]):
+        right=img[0]
+    if(left<0):
+        left=0
+    if(down>img[1]):
+        down=img[1]
+    if(up<0):
+        up=0
+#    print("xL: ",xL,"xH: ",xH,"yL: ",yL,"yH: ",yH)
+    return [left,right,up,down]
+
+
 
 def search_box1(img,yxr,scale):
 #    print("img: ",img, "yxr: ",yxr)
