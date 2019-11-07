@@ -1,19 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Nov  6 15:33:38 2019
-
-@author: JAlbe
-"""
-
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Oct 27 14:30:19 2019
-
-@author: JAlbe
-"""
-
-# -*- coding: utf-8 -*-
-"""
 Created on Thu Oct 24 14:33:31 2019
 
 @author: JAlbe
