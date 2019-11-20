@@ -113,9 +113,20 @@ def draw_circles(img, circ):
               cv2.circle(img,(i[0],i[1]),2,(0,0,255),3)
       return img
     except:
-        print('No circles found in image: ')
+#        print('No circles found in image: ')
         return img
 
+def draw_circles2(img, circ):
+    try:
+      circ = np.uint16(np.around(circ))
+      # draw the outer circle
+      cv2.circle(img,(circ[0],circ[1]),circ[2],(0,255,0),2)
+      # draw the center of the circle
+      cv2.circle(img,(circ[0],circ[1]),2,(0,0,255),3)
+      return img
+    except:
+#        print('No circles found in image: ')
+        return img
 
 
 def video_export_v2(output_img_folder,images,filename):
@@ -150,11 +161,14 @@ def colourmask(img,colour):
         img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         if colour == 'red':
             low_red1 = np.array([0, 200, 50])
-            high_red1 = np.array([10, 255, 255])
+#            high_red1 = np.array([10, 255, 255])
+            high_red1 = np.array([20, 255, 255])
             low_red2 = np.array([175, 200, 50])
             high_red2 = np.array([179, 255, 255])
             red_mask1 = cv2.inRange(img_hsv, low_red1, high_red1)
+#            cv2.imshow("red_lower",red_mask1)
             red_mask2 = cv2.inRange(img_hsv, low_red2, high_red2)
+#            cv2.imshow("red_higher",red_mask2)
 #            masked_img1 = cv2.bitwise_and(img, img, mask=red_mask1)
 #            masked_img2 = cv2.bitwise_and(img, img, mask=red_mask2)
 #            masked_img = cv2.bitwise_or(masked_img1, masked_img2)            
@@ -178,8 +192,67 @@ def colourmask(img,colour):
     except:
         return None
 
-def search_box(img,center,size):
-  return img[center[0]-size:center[0]+size,center[1]-size:center[1]+size,:]
+def getBoxLim(img,yxr,scale):
+#    print("img: ",img, "yxr: ",yxr)
+#    size=np.uint16(np.around(scale*yxr[2]))
+    size=int((np.around(scale*yxr[2])))
+    left = yxr[1]-size
+    right = yxr[1]+size
+    up = yxr[0]-size
+    down = yxr[0]+size
+    if(right>img[0]):
+        right=img[0]
+    if(left<0):
+        left=0
+    if(down>img[1]):
+        down=img[1]
+    if(up<0):
+        up=0
+#    print("xL: ",xL,"xH: ",xH,"yL: ",yL,"yH: ",yH)
+    return [left,right,up,down]
+
+
+
+def search_box1(img,yxr,scale):
+#    print("img: ",img, "yxr: ",yxr)
+    size=np.uint16(np.around(scale*yxr[2]))
+    xL = yxr[1]-size
+    xH = yxr[1]+size
+    yL = yxr[0]-size
+    yH = yxr[0]+size
+    if(xH>img[0]):
+        xH=img[0]
+    if(xL<0):
+        xL=0
+    if(yH>img[1]):
+        yH=img[1]
+    if(yL<0):
+        yL=0
+#    print("xL: ",xL,"xH: ",xH,"yL: ",yL,"yH: ",yH)
+    return [xL,xH,yL,yH]
+
+def search_box2(img,yxr,scale):
+#    print("img: ",img.shape, "yxr: ",yxr)
+    size=np.uint16(np.around(scale*yxr[2]))
+    xL = yxr[1]-size
+    xH = yxr[1]+size
+    yL = yxr[0]-size
+    yH = yxr[0]+size
+    if(xH>img.shape[0]):
+        xH=img.shape[0]
+    if(xL<0):
+        xL=0
+    if(yH>img.shape[1]):
+        yH=img.shape[1]
+    if(yL<0):
+        yL=0
+    b_img=cv2.rectangle(img, (yL, xL), (yH, xH), (255,0,0), 2)
+#    print("xL: ",xL,"xH: ",xH,"yL: ",yL,"yH: ",yH)
+    return b_img
+
+#def search_colour(mask_img,box):
+#    value = sum(sum(mask_img[box[0]:box[1],box[2]:box[3]]))
+#    return value
 
 
 # ========================================================================#
