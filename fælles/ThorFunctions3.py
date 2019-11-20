@@ -275,10 +275,10 @@ def colourmask(img,colour):
     except:
         return None
 
-def PreProcessing(img):
+def PreProcessing(img,number_of_iterations):
     element = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9,9)) 
-    eroded = cv2.erode(img, element, iterations=1)
-    dilated = cv2.dilate(eroded, element, iterations=1)
+    eroded = cv2.erode(img, element, iterations=number_of_iterations)
+    dilated = cv2.dilate(eroded, element, iterations=number_of_iterations)
     blurred = cv2.GaussianBlur(dilated, (11, 11), 0)  
 
     return blurred
@@ -367,7 +367,7 @@ def findContours(red_mask_pp):
     for con in contours:
         area = cv2.contourArea(con)
         #print('area=',area)
-        if 100 < area < 40000:
+        if 200 < area < 40000:
             contours_area.append(con)
             
             
@@ -381,7 +381,7 @@ def findContours(red_mask_pp):
             break
         circularity = 4*math.pi*(area/(perimeter*perimeter))
         #print ('circularity=',circularity)
-        if 0.1 < circularity < 1.2:
+        if 0.72 < circularity < 1.2:
             contours_cirles.append(con)
             
     

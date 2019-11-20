@@ -35,7 +35,7 @@ counter=0
 
 for file in files:    
     counter+=1
-    if counter>1500:
+    if counter>500:
         break    
     print(file)
 
