@@ -4,8 +4,6 @@ import os
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import imutils
-import math
-
 
 
 
@@ -275,20 +273,10 @@ def colourmask(img,colour):
     except:
         return None
 
-def PreProcessing(img,number_of_iterations):
-    element = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9,9)) 
-    eroded = cv2.erode(img, element, iterations=number_of_iterations)
-    dilated = cv2.dilate(eroded, element, iterations=number_of_iterations)
-    blurred = cv2.GaussianBlur(dilated, (11, 11), 0)  
-
-    return blurred
-
-def calculateDistance(a,b):  
-     dist = math.sqrt((a[0] - b[0])**2 + (a[1] - b[1])**2)  
-     return dist 
-
-    
 def BLOB(img):
+    element = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3,3)) 
+    eroded = cv2.erode(img, element, iterations=3)
+    dilated = cv2.dilate(eroded, element, iterations=10)
     
     # blob detection
     params = cv2.SimpleBlobDetector_Params()
@@ -328,99 +316,78 @@ def BLOB(img):
 
     all_pos=np.vstack((all_pos_x,all_pos_y)).T
     
-    return all_pos
+    return all_pos, dilated
         
-
-
-def findContours(red_mask_pp):
-    
-
-
-    
-    #im_gauss = cv2.GaussianBlur(imgray, (5, 5), 0)
-    ret, thresh = cv2.threshold(red_mask_pp, 1, 255, 0)
-    #contours,hierarchy  = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    
-    #New lines added from pyimage
-    contours = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
-    	cv2.CHAIN_APPROX_SIMPLE)
-    contours = imutils.grab_contours(contours)
-    c = max(contours, key=cv2.contourArea)
-    
-    
-    	
-
-    #This is not used since we only want to find the centrum and radius after sorting on area and circulatiry
-    #cnt = contours[0]
-    #M = cv2.moments(cnt)
-    #cx = int(M['m10']/M['m00'])
-    #cy = int(M['m01']/M['m00'])
-    #        
-    #(x,y),radius = cv2.minEnclosingCircle(cnt)
-    #center_new = (int(x),int(y))
-    #radius_new  = int(radius)
-    
-    
-    #Next part is discarding based on area and circularity
-    contours_area = []
-    # calculate area and filter into new array
-    for con in contours:
-        area = cv2.contourArea(con)
-        #print('area=',area)
-        if 200 < area < 40000:
-            contours_area.append(con)
-            
-            
-    contours_cirles = []
-    
-    # check if contour is of circular shape
-    for con in contours_area:
-        perimeter = cv2.arcLength(con, True)
-        area = cv2.contourArea(con)
-        if perimeter == 0:
-            break
-        circularity = 4*math.pi*(area/(perimeter*perimeter))
-        #print ('circularity=',circularity)
-        if 0.72 < circularity < 1.2:
-            contours_cirles.append(con)
-            
-    
-    
-            
-    #Next part: finding minimum enclosing circel
-    cnt = contours_cirles[0]
-    (x,y),radius = cv2.minEnclosingCircle(cnt)
-    center_new = (int(x),int(y))
-    radius_new  = int(radius)
-    
-    
-    pos= np.hstack((x,y,radius) )
-    pos=np.reshape(pos, (1,1, 3))
-
-
-#    import ThorFunctions2 as TH
-#    #The next par is only to find the extremums in N,E,S,W and thereafter drawing these and the perimeter itself
-    # determine the most extreme points along the contour
-#    extLeft = tuple(c[c[:, :, 0].argmin()][0])
-#    extRight = tuple(c[c[:, :, 0].argmax()][0])
-#    extTop = tuple(c[c[:, :, 1].argmin()][0])
-#    extBot = tuple(c[c[:, :, 1].argmax()][0])
+        
+#
+#os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video4_as_pic')
+#file_name_of_picture='video4_1211.png'   #'pica33.png'
+##
+##os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/outdoor')
+##file_name_of_picture='pica36.png'   #'pica33.png'
+#
+#
+#img = cv2.imread(file_name_of_picture,1)
+#
+#plt.close()
+#
+#
+#img_RGB= cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+#plt.figure('original')
+#imgplot = plt.imshow(img_RGB)
+#blurred = cv2.GaussianBlur(img, (11, 11), 0)
+#hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
+#cv2.imshow('hsv',hsv)
+#plt.figure('HSV')
+#hsv_rgb = cv2.cvtColor(hsv, cv2.COLOR_BGR2HSV)
+#imgplot = plt.imshow(hsv_rgb)
+#
+#
+#circles_h=h_method(img,1,150,130,14,5,40)
+#circles_s=s_method(img,1,150,130,15,5,40)
+#circles_v=v_method(img,1,150,150,15,5,40)
+#circles_gray=gray_method(file_name_of_picture,1,150,200,10,10,40)
+#
+#
+#all_pos_x,all_pos_y,all_radius=concatenate_results(method1=circles_h,method2=circles_s,method3=circles_v,method4=circles_gray)
+#
+#
+#all_pos_valid_oldpos_x=Discard_if_too_far_from_old_pos(all_pos=all_pos_x,oldpos=260,thres_oldpos=50)
+#all_pos_valid_oldpos_y=Discard_if_too_far_from_old_pos(all_pos=all_pos_y,oldpos=248,thres_oldpos=50)
+#all_radius_valid_old=Discard_if_too_far_from_old_pos(all_pos=all_radius,oldpos=12,thres_oldpos=10)
+#
+#
+#
+#avg_pos_x=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_pos_valid_oldpos_x,thres_avg_pos=10)
+#avg_pos_y=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_pos_valid_oldpos_y,thres_avg_pos=10)
+#avg_radius=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_radius_valid_old,thres_avg_pos=5)
+#
+#
+#
+#print('avgpos_x',avg_pos_x)
+#print('avgpos_y',avg_pos_y)
+#print('avg_radius',avg_radius)
+#
+#"""
+#lav et plot på bilelde med alle de muligede position og så avg
+#"""
+#
+#avg_all=np.concatenate((int(avg_pos_x),int(avg_pos_y),int(avg_radius)), axis=None)
+##avg_all=np.concatenate((all_pos_x,all_pos_y,all_radius), axis=2)
+#avg_all=np.vstack((all_pos_x,all_pos_y,all_radius)).T
+#
+#avg_all = np.uint16(np.around(avg_all))
+#for i in avg_all[:]:
+#    # draw the outer circle
+#    cv2.circle(img,(i[0],i[1]),i[2],(0,255,0),12)
+#    # draw the center of the circle
+#    cv2.circle(img,(i[0],i[1]),2,(0,0,255),8)
+#
+#cv2.circle(img,(avg_all[0],avg_all[1]),avg_all[2],(255,0,0),12)
+## draw the center of the circle
+#cv2.circle(img,(avg_all[0],avg_all[1]),2,(255,255,0),8)
 #    
-#    diameter1=TH.calculateDistance(extLeft,extRight)
-#    diameter2=TH.calculateDistance(extTop,extBot)
-#    
-#    if diameter1 >= diameter2:
-#        radius=np.round(diameter1/2)
-#    else:
-#        radius=np.round(diameter2/2)
-#    
-#    #Only if you want to draw the extrema
-#    cv2.drawContours(img, [c], -1, (0, 255, 0), 3)
-#    cv2.circle(img, extLeft, 8, (0, 0, 255), -1)
-#    cv2.circle(img, extRight, 8, (0, 255, 0), -1)
-#    cv2.circle(img, extTop, 8, (255, 0, 0), -1)
-#    cv2.circle(img, extBot, 8, (255, 255, 0), -1)
-#    
-    return pos
-     
+#cimg = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+#plt.figure('avg_all')
+#imgplot = plt.imshow(cimg)
 

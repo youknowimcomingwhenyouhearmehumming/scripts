@@ -4,8 +4,6 @@ import os
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import imutils
-import math
-
 
 
 
@@ -36,11 +34,9 @@ def h_method(img_original,dbValue_h,minDist_h,param1_h,param2_h,minRadius_h,maxR
         plt.figure('h part')
         imgplot = plt.imshow(cimg)
         
-#        print('Succed')
         return circles_h
 
     except:
-#        print('not succed')
         pass
     
     
@@ -91,6 +87,7 @@ def v_method(img_original,dbValue_v,minDist_v,param1_v,param2_v,minRadius_v,maxR
         param1=param1_v,param2=param2_v,minRadius=minRadius_v,maxRadius=maxRadius_v) 
         
         circles_v = np.uint16(np.around(circles_v))
+        print(circles_v)
         for i in circles_v[0,:]:
             # draw the outer circle
             cv2.circle(img,(i[0],i[1]),i[2],(0,255,0),12)
@@ -237,190 +234,143 @@ def Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos,thres_avg_pos):
     return np.round(avg_pos)
 
 
-def colourmask(img,colour):
-#Different applications use different scales for HSV. 
-#For example gimp uses H = 0-360, S = 0-100 and V = 0-100. 
-#But OpenCV uses H: 0-179, S: 0-255, V: 0-255. Here i got a hue value of 22 in gimp.
-#So I took half of it, 11, and defined range for that. ie (5,50,50) - (15,255,255).
-#    masked_img=[]
-    try:
-        img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        if colour == 'red':
-            low_red1 = np.array([174, 100, 20])
-            high_red1 = np.array([179, 255, 255])
-#            low_red2 = np.array([0, 100, 20])
-#            high_red2 = np.array([0, 255, 255])
-            red_mask1 = cv2.inRange(img_hsv, low_red1, high_red1)
-#            red_mask2 = cv2.inRange(img_hsv, low_red2, high_red2)
-#            masked_img1 = cv2.bitwise_and(img, img, mask=red_mask1)
-#            masked_img2 = cv2.bitwise_and(img, img, mask=red_mask2)
-#            masked_img = cv2.bitwise_or(masked_img1, masked_img2)            
-            return red_mask1
-#            return cv2.bitwise_or(red_mask1,red_mask2)
-        elif colour == 'green':
-            low_green = np.array([38, 50, 50])
-            high_green = np.array([75, 255, 255])
-            green_mask = cv2.inRange(img_hsv, low_green, high_green)
-#            masked_img = cv2.bitwise_and(img, img, mask=green_mask)
-#            return masked_img
-            return green_mask
-        elif colour == 'blue':
-            low_blue = np.array([94, 80, 2])
-            high_blue = np.array([126, 255, 255])
-            blue_mask = cv2.inRange(img_hsv, low_blue, high_blue)
-#            masked_img = cv2.bitwise_and(img, img, mask=blue_mask)
-#            return masked_img
-            return blue_mask
-        
-    except:
-        return None
+plt.close()
+cv2.destroyAllWindows()
 
-def PreProcessing(img,number_of_iterations):
-    element = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9,9)) 
-    eroded = cv2.erode(img, element, iterations=number_of_iterations)
-    dilated = cv2.dilate(eroded, element, iterations=number_of_iterations)
-    blurred = cv2.GaussianBlur(dilated, (11, 11), 0)  
-
-    return blurred
-
-def calculateDistance(a,b):  
-     dist = math.sqrt((a[0] - b[0])**2 + (a[1] - b[1])**2)  
-     return dist 
-
-    
-def BLOB(img):
-    
-    # blob detection
-    params = cv2.SimpleBlobDetector_Params()
-    params.filterByColor = False
-    params.blobColor = 0
-    #params.minThreshold = 14
-    #params.maxThreshold = 25
-    params.minDistBetweenBlobs=10
-    params.filterByArea = True
-    params.minArea = 20
-    params.maxArea = 100000
-    params.filterByCircularity = True
-    params.minCircularity =.7 #89 for img200  1, #90 img300 1,89 img610 3, 86 img 1150 3,  
-    params.maxCircularity = 1
-    params.filterByConvexity = True
-    params.minConvexity = 0.90#98 for img200 1,98 for img300 1,97 img610 20, 98 img 1150 2,   
-    params.maxConvexity=1
-    params.filterByInertia = True
-    params.minInertiaRatio=0.6 #84 for img200 2, #77 for img300 5, 75 img610 15, 55  img 1150 15, 
-    params.maxInertiaRatio=1
-                    
-    
-    
-    det = cv2.SimpleBlobDetector_create(params)
-    keypts = det.detect(dilated)
-    
-    all_pos_x=[]
-    all_pos_y=[]
-#        i = 0
-    for kp in keypts:
-
-#            i+=1
-#        cv2.rectangle(res,(int(kp.pt[0]),int(kp.pt[1])),(int(kp.pt[0])+1,int(kp.pt[1])+1),(0,255,0),2)
-        all_pos_x.append(int(np.round(kp.pt[0])))
-        all_pos_y.append(int(np.round(kp.pt[1])))
+os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video4_as_pic')
+file_name_of_picture='video_200.png'   #'pica33.png'
+#
+#os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/newvideo/video4_as_pic')
+#file_name_of_picture='video_1181.png'   #'pica33.png'
 
 
-    all_pos=np.vstack((all_pos_x,all_pos_y)).T
-    
-    return all_pos
-        
+img = cv2.imread(file_name_of_picture,1)
 
 
-def findContours(red_mask_pp):
-    
+
+img_RGB= cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+plt.figure('original')
+imgplot = plt.imshow(img_RGB)
+blurred = cv2.GaussianBlur(img, (11, 11), 0)
+hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
+cv2.imshow('hsv',hsv)
+plt.figure('HSV')
+hsv_rgb = cv2.cvtColor(hsv, cv2.COLOR_BGR2HSV)
+imgplot = plt.imshow(hsv_rgb)
 
 
-    
-    #im_gauss = cv2.GaussianBlur(imgray, (5, 5), 0)
-    ret, thresh = cv2.threshold(red_mask_pp, 1, 255, 0)
-    #contours,hierarchy  = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    
-    #New lines added from pyimage
-    contours = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
-    	cv2.CHAIN_APPROX_SIMPLE)
-    contours = imutils.grab_contours(contours)
-    c = max(contours, key=cv2.contourArea)
-    
-    
-    	
+# For video_200.png from video 4 is the optimal values: many of them have a lot of kandidates in their picture
+#circles_h=h_method(img,1,50,30,15,2,15)
+#circles_s=s_method(img,1,50,200,15,2,15) %FAiling no ball at all
+#circles_v=v_method(img,1,50,150,11,2,15)
+#circles_gray=gray_method(file_name_of_picture,1,50,150,7,1,10)
 
-    #This is not used since we only want to find the centrum and radius after sorting on area and circulatiry
-    #cnt = contours[0]
-    #M = cv2.moments(cnt)
-    #cx = int(M['m10']/M['m00'])
-    #cy = int(M['m01']/M['m00'])
-    #        
-    #(x,y),radius = cv2.minEnclosingCircle(cnt)
-    #center_new = (int(x),int(y))
-    #radius_new  = int(radius)
-    
-    
-    #Next part is discarding based on area and circularity
-    contours_area = []
-    # calculate area and filter into new array
-    for con in contours:
-        area = cv2.contourArea(con)
-        #print('area=',area)
-        if 200 < area < 40000:
-            contours_area.append(con)
-            
-            
-    contours_cirles = []
-    
-    # check if contour is of circular shape
-    for con in contours_area:
-        perimeter = cv2.arcLength(con, True)
-        area = cv2.contourArea(con)
-        if perimeter == 0:
-            break
-        circularity = 4*math.pi*(area/(perimeter*perimeter))
-        #print ('circularity=',circularity)
-        if 0.72 < circularity < 1.2:
-            contours_cirles.append(con)
-            
-    
-    
-            
-    #Next part: finding minimum enclosing circel
-    cnt = contours_cirles[0]
-    (x,y),radius = cv2.minEnclosingCircle(cnt)
-    center_new = (int(x),int(y))
-    radius_new  = int(radius)
-    
-    
-    pos= np.hstack((x,y,radius) )
-    pos=np.reshape(pos, (1,1, 3))
+# For video_1181.png from video 4 is the optimal values:
+circles_h=h_method(img,1,100,40,19,5,20)
+circles_s=s_method(img,1,100,200,22,5,20)
+circles_v=v_method(img,1,100,150,16,5,20)
+circles_gray=gray_method(file_name_of_picture,1,100,200,19,10,20)
 
 
-#    import ThorFunctions2 as TH
-#    #The next par is only to find the extremums in N,E,S,W and thereafter drawing these and the perimeter itself
-    # determine the most extreme points along the contour
-#    extLeft = tuple(c[c[:, :, 0].argmin()][0])
-#    extRight = tuple(c[c[:, :, 0].argmax()][0])
-#    extTop = tuple(c[c[:, :, 1].argmin()][0])
-#    extBot = tuple(c[c[:, :, 1].argmax()][0])
-#    
-#    diameter1=TH.calculateDistance(extLeft,extRight)
-#    diameter2=TH.calculateDistance(extTop,extBot)
-#    
-#    if diameter1 >= diameter2:
-#        radius=np.round(diameter1/2)
-#    else:
-#        radius=np.round(diameter2/2)
-#    
-#    #Only if you want to draw the extrema
-#    cv2.drawContours(img, [c], -1, (0, 255, 0), 3)
-#    cv2.circle(img, extLeft, 8, (0, 0, 255), -1)
-#    cv2.circle(img, extRight, 8, (0, 255, 0), -1)
-#    cv2.circle(img, extTop, 8, (255, 0, 0), -1)
-#    cv2.circle(img, extBot, 8, (255, 255, 0), -1)
-#    
-    return pos
-     
 
+all_pos_x,all_pos_y,all_radius=concatenate_results(method1=circles_h,method2=circles_s,method3=circles_v,method4=circles_gray)
+
+
+all_pos_valid_oldpos_x=Discard_if_too_far_from_old_pos(all_pos=all_pos_x,oldpos=420,thres_oldpos=50)
+all_pos_valid_oldpos_y=Discard_if_too_far_from_old_pos(all_pos=all_pos_y,oldpos=248,thres_oldpos=50)
+all_radius_valid_old=Discard_if_too_far_from_old_pos(all_pos=all_radius,oldpos=12,thres_oldpos=10)
+
+
+
+avg_pos_x=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_pos_valid_oldpos_x,thres_avg_pos=40)
+avg_pos_y=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_pos_valid_oldpos_y,thres_avg_pos=40)
+avg_radius=Discard_outlier_and_find_mean_pos(all_pos_valid_oldpos=all_radius_valid_old,thres_avg_pos=5)
+
+
+
+print('avgpos_x',avg_pos_x)
+print('avgpos_y',avg_pos_y)
+print('avg_radius',avg_radius)
+
+"""
+lav et plot på bilelde med alle de muligede position og så avg
+"""
+
+avg_pos=np.concatenate((int(avg_pos_x),int(avg_pos_y),int(avg_radius)), axis=None)
+#all_pos=np.concatenate((all_pos_x,all_pos_y,all_radius), axis=2)
+all_pos=np.vstack((all_pos_x,all_pos_y,all_radius)).T
+
+all_pos = np.uint16(np.around(all_pos))
+for i in all_pos[:]:
+    # draw the outer circle
+    cv2.circle(img,(i[0],i[1]),i[2],(0,255,0),12)
+    # draw the center of the circle
+    cv2.circle(img,(i[0],i[1]),2,(0,0,255),8)
+
+cv2.circle(img,(avg_pos[0],avg_pos[1]),avg_pos[2],(255,0,0),12)
+# draw the center of the circle
+cv2.circle(img,(avg_pos[0],avg_pos[1]),2,(255,255,0),8)
+    
+cimg = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+plt.figure('all_pos')
+imgplot = plt.imshow(cimg)
+
+
+
+
+#PICA 33 x 598
+#circles_h=h_method(img,1,500,200,13,10,40)
+#circles_s=s_method(img,1,500,190,13,10,40)
+#circles_v=v_method(img,1,500,195,16,10,40)
+#circles_gray=gray_method(file_name_of_picture,1,200,300,11,10,40)
+#PICA 34  x=636
+#circles_h=h_method(img,1,150,200,13,10,40)
+#circles_s=s_method(img,1,150,190,13,10,40)
+#circles_v=v_method(img,1,150,195,16,10,40)
+#circles_gray=gray_method(file_name_of_picture,1,150,300,11,10,40)
+#PICA 35 x=676
+#circles_h=h_method(img,1,150,200,13,5,40)
+#circles_s=s_method(img,1,150,190,13,5,40)
+#circles_v=v_method(img,1,150,150,15,5,40)
+#circles_gray=gray_method(file_name_of_picture,1,150,300,11,10,40)
+#
+
+#A=np.array([10,11,13])
+#B=np.array([8,7,2])
+#C=np.array([12,18,16])
+#
+#mask=(A[:]<=B+1)
+#
+#mask_multiple_criteria=[(A < B) & (A > C) & (A==5)]
+
+
+
+
+
+
+"""
+This whol part is for combining the x and y component into one number
+"""
+#"""
+#This parts combines the x and y components into one number
+#"""
+#h_pos_1D=np.sqrt(np.power(circles_h[0,0,0:2], 2)+np.power(circles_h[0,0,0:2],2))
+#s_pos_1D=np.sqrt(np.power(circles_s[0,0,0:2], 2)+np.power(circles_s[0,0,0:2],2))
+#v_pos_1D=np.sqrt(np.power(circles_v[0,0,0:2], 2)+np.power(circles_v[0,0,0:2],2))
+#gray_pos_1D=np.sqrt(np.power(circles_gray[0,0,0:2], 2)+np.power(circles_gray[0,0,0:2],2))
+#"""
+#Here it's checked wheter each individual position is too far away from the oldposition +/- the threshold of 
+#the old position.
+#"""
+#all_pos=np.concatenate((h_pos_1D,s_pos_1D,v_pos_1D,gray_pos_1D), axis=None)
+#all_pos_valid_oldpos=all_pos[(oldpos-thres_oldpos < all_pos) & (oldpos+thres_oldpos > all_pos)]  
+#
+#"""
+#"""
+#avg_pos_all=np.mean(all_pos_valid_oldpos)
+#
+#while(np.sum([(avg_pos_all-thres_avg_pos < all_pos_valid_oldpos) & (avg_pos_all+thres_avg_pos < all_pos_valid_oldpos)])>0): #While some of the positions are outside the mean +/- threshold
+#    all_pos_valid_oldpos[(avg_pos_all-thres_avg_pos < all_pos_valid_oldpos) & (avg_pos_all+thres_avg_pos > all_pos_valid_oldpos)]
+#
+#
+#avg_pos(all_pos_valid_oldpos)

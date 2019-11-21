@@ -275,10 +275,10 @@ def colourmask(img,colour):
     except:
         return None
 
-def PreProcessing(img,number_of_iterations):
+def PreProcessing(img):
     element = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9,9)) 
-    eroded = cv2.erode(img, element, iterations=number_of_iterations)
-    dilated = cv2.dilate(eroded, element, iterations=number_of_iterations)
+    eroded = cv2.erode(img, element, iterations=1)
+    dilated = cv2.dilate(eroded, element, iterations=1)
     blurred = cv2.GaussianBlur(dilated, (11, 11), 0)  
 
     return blurred
@@ -334,7 +334,7 @@ def BLOB(img):
 
 def findContours(red_mask_pp):
     
-
+    import ThorFunctions2 as TH
 
     
     #im_gauss = cv2.GaussianBlur(imgray, (5, 5), 0)
@@ -367,7 +367,7 @@ def findContours(red_mask_pp):
     for con in contours:
         area = cv2.contourArea(con)
         #print('area=',area)
-        if 200 < area < 40000:
+        if 100 < area < 40000:
             contours_area.append(con)
             
             
@@ -381,7 +381,7 @@ def findContours(red_mask_pp):
             break
         circularity = 4*math.pi*(area/(perimeter*perimeter))
         #print ('circularity=',circularity)
-        if 0.72 < circularity < 1.2:
+        if 0.1 < circularity < 1.2:
             contours_cirles.append(con)
             
     
@@ -398,7 +398,7 @@ def findContours(red_mask_pp):
     pos=np.reshape(pos, (1,1, 3))
 
 
-#    import ThorFunctions2 as TH
+
 #    #The next par is only to find the extremums in N,E,S,W and thereafter drawing these and the perimeter itself
     # determine the most extreme points along the contour
 #    extLeft = tuple(c[c[:, :, 0].argmin()][0])

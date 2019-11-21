@@ -334,7 +334,7 @@ def BLOB(img):
 
 def findContours(red_mask_pp):
     
-
+    import ThorFunctions2 as TH
 
     
     #im_gauss = cv2.GaussianBlur(imgray, (5, 5), 0)
@@ -398,7 +398,7 @@ def findContours(red_mask_pp):
     pos=np.reshape(pos, (1,1, 3))
 
 
-#    import ThorFunctions2 as TH
+
 #    #The next par is only to find the extremums in N,E,S,W and thereafter drawing these and the perimeter itself
     # determine the most extreme points along the contour
 #    extLeft = tuple(c[c[:, :, 0].argmin()][0])
