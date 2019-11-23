@@ -246,39 +246,35 @@ def colourmask(img,colour):
     try:
         img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         if colour == 'red':
-            low_red1 = np.array([174, 100, 20])
-            high_red1 = np.array([179, 255, 255])
-#            low_red2 = np.array([0, 100, 20])
-#            high_red2 = np.array([0, 255, 255])
+            low_red1 = np.array([162, 60, 60])     # ([165, 60, 60])
+            high_red1 = np.array([179, 130, 200])  #[179, 130, 200])
+            low_red2 = np.array([0, 0, 70])      #[0, 135, 20])
+            high_red2 = np.array([0, 0, 255])   #([11, 200, 255])
+            low_red3 = np.array([0, 135, 100])      #[0, 135, 20])
+            high_red3 = np.array([11, 255, 255])   #([11, 200, 255])
+            
+
+
+
+            
             red_mask1 = cv2.inRange(img_hsv, low_red1, high_red1)
-#            red_mask2 = cv2.inRange(img_hsv, low_red2, high_red2)
+            red_mask2 = cv2.inRange(img_hsv, low_red2, high_red2)
+            red_mask3 = cv2.inRange(img_hsv, low_red3, high_red3)
 #            masked_img1 = cv2.bitwise_and(img, img, mask=red_mask1)
 #            masked_img2 = cv2.bitwise_and(img, img, mask=red_mask2)
 #            masked_img = cv2.bitwise_or(masked_img1, masked_img2)            
-            return red_mask1
-#            return cv2.bitwise_or(red_mask1,red_mask2)
-        elif colour == 'green':
-            low_green = np.array([38, 50, 50])
-            high_green = np.array([75, 255, 255])
-            green_mask = cv2.inRange(img_hsv, low_green, high_green)
-#            masked_img = cv2.bitwise_and(img, img, mask=green_mask)
-#            return masked_img
-            return green_mask
-        elif colour == 'blue':
-            low_blue = np.array([94, 80, 2])
-            high_blue = np.array([126, 255, 255])
-            blue_mask = cv2.inRange(img_hsv, low_blue, high_blue)
-#            masked_img = cv2.bitwise_and(img, img, mask=blue_mask)
-#            return masked_img
-            return blue_mask
-        
+#            return red_mask1
+
+            return cv2.bitwise_or(red_mask1,red_mask3)
+
+
     except:
         return None
 
 def PreProcessing(img,number_of_iterations):
     element = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9,9)) 
-    eroded = cv2.erode(img, element, iterations=number_of_iterations)
-    dilated = cv2.dilate(eroded, element, iterations=number_of_iterations)
+    dilated = cv2.dilate(img, element, iterations=number_of_iterations)
+    eroded = cv2.erode(element, element, iterations=number_of_iterations)
     blurred = cv2.GaussianBlur(dilated, (11, 11), 0)  
 
     return blurred
@@ -296,21 +292,20 @@ def BLOB(img):
     params.blobColor = 0
     #params.minThreshold = 14
     #params.maxThreshold = 25
-    params.minDistBetweenBlobs=10
+    params.minDistBetweenBlobs=100
     params.filterByArea = True
-    params.minArea = 20
-    params.maxArea = 100000
+    params.minArea = 100
+    params.maxArea = 20000
     params.filterByCircularity = True
-    params.minCircularity =.7 #89 for img200  1, #90 img300 1,89 img610 3, 86 img 1150 3,  
+    params.minCircularity =.8 #89 for img200  1, #90 img300 1,89 img610 3, 86 img 1150 3,  
     params.maxCircularity = 1
     params.filterByConvexity = True
-    params.minConvexity = 0.90#98 for img200 1,98 for img300 1,97 img610 20, 98 img 1150 2,   
+    params.minConvexity = 0.8#98 for img200 1,98 for img300 1,97 img610 20, 98 img 1150 2,   
     params.maxConvexity=1
     params.filterByInertia = True
     params.minInertiaRatio=0.6 #84 for img200 2, #77 for img300 5, 75 img610 15, 55  img 1150 15, 
     params.maxInertiaRatio=1
-                    
-    
+        
     
     det = cv2.SimpleBlobDetector_create(params)
     keypts = det.detect(dilated)
@@ -381,7 +376,7 @@ def findContours(red_mask_pp):
             break
         circularity = 4*math.pi*(area/(perimeter*perimeter))
         #print ('circularity=',circularity)
-        if 0.72 < circularity < 1.2:
+        if 0.85 < circularity < 1.2:
             contours_cirles.append(con)
             
     

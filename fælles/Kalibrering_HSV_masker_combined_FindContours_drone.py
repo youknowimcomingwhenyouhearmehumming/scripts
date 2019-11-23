@@ -15,14 +15,14 @@ plt.close('all')
 #img = cv2.imread('video_1222.png' )
 
 
-#os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/closeup')
-#img = cv2.imread('closeup1200.png' )
+os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/closeup')
+img = cv2.imread('closeup22.png' )
 
 #os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/longAndShortDist')
 #img = cv2.imread('longAndShortDist450.png' )
-
-os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/hd')
-img = cv2.imread('hd560.png' )
+#
+#os.chdir('C:/Users/Bruger/Documents/Uni/Abu dhabi/data/hd')
+#img = cv2.imread('hd560.png' )
 
 
 cimg = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
@@ -59,7 +59,7 @@ def colourmask(img,colour):
 #            masked_img1 = cv2.bitwise_and(img, img, mask=red_mask1)
 #            masked_img2 = cv2.bitwise_and(img, img, mask=red_mask2)
 #            masked_img = cv2.bitwise_or(masked_img1, masked_img2)            
-#            return red_mask1
+            return red_mask1
 
             return cv2.bitwise_or(red_mask1,red_mask3)
 
@@ -144,7 +144,7 @@ for con in contours_area:
         break
     circularity = 4*math.pi*(area/(perimeter*perimeter))
     print ('circularity=',circularity)
-    if 0.72 < circularity < 1.2:
+    if 0.8 < circularity < 1.2:
         contours_cirles.append(con)
         
 
