@@ -55,8 +55,10 @@ while cap.isOpened() :
     ############################################################# End of making images
     
     if(isBall):
-        CandCirc = AF.h_circles(imgOrg[xLxHyLyH[0]:xLxHyLyH[1],xLxHyLyH[2]:xLxHyLyH[3]], True ,[])
-        cv2.imshow('Cropped', imgOrg[xLxHyLyH[0]:xLxHyLyH[1],xLxHyLyH[2]:xLxHyLyH[3]])
+        CandCirc = AF.h_circles(imgOrg[up:down,left:right,:], True ,[])
+        cv2.imshow('Cropped', imgOrg[up:down,left:right,:])
+#        CandCirc = AF.h_circles(imgOrg[xLxHyLyH[0]:xLxHyLyH[1],xLxHyLyH[2]:xLxHyLyH[3]], True ,[])
+#        cv2.imshow('Cropped', imgOrg[xLxHyLyH[0]:xLxHyLyH[1],xLxHyLyH[2]:xLxHyLyH[3]])
         try:
             for circ in range(CandCirc.shape[1]):
     #            value = sum(sum(imgMask[CandBox[circ][0]:CandBox[circ][1],CandBox[circ][2]:CandBox[circ][3]]))
@@ -72,7 +74,7 @@ while cap.isOpened() :
             right=int(right)
             up=int(up)
             down=int(down)
-            value = sum(sum(imgMask[up:down][left:right]))
+            value = sum(sum(imgMask[up:down,left:right]))
             if(value>255*20):
                 isBall = True
                 imgOrg = AF.draw_circles2(imgOrg,CandCirc[0][circ][:])
@@ -80,7 +82,7 @@ while cap.isOpened() :
                 xLxHyLyH = xLxHyLyH.astype(int)
                 print("xLxHyLyH:")
                 print(xLxHyLyH)
-                imgOrg = cv2.rectangle(imgOrg,(xLxHyLyH[2],xLxHyLyH[0]), (xLxHyLyH[3],xLxHyLyH[1]),(255,0,0),2)
+#                imgOrg = cv2.rectangle(imgOrg,(xLxHyLyH[2],xLxHyLyH[0]), (xLxHyLyH[3],xLxHyLyH[1]),(255,0,0),2)
                 break
             else:
                 isBall = False

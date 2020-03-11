@@ -238,17 +238,27 @@ def search_box2(img,yxr,scale):
     xH = yxr[1]+size
     yL = yxr[0]-size
     yH = yxr[0]+size
-    if(xH>img.shape[0]):
-        xH=img.shape[0]
+    # if(xH>img.shape[0]):
+    #     xH=img.shape[0]
+    # if(xL<0):
+    #     xL=0
+    # if(yH>img.shape[1]):
+    #     yH=img.shape[1]
+    # if(yL<0):
+    #     yL=0
+    if(xH>img[0]):
+        xH=img[0]
     if(xL<0):
         xL=0
-    if(yH>img.shape[1]):
-        yH=img.shape[1]
+    if(yH>img[1]):
+        yH=img[1]
     if(yL<0):
         yL=0
-    b_img=cv2.rectangle(img, (yL, xL), (yH, xH), (255,0,0), 2)
+    #b_img=cv2.rectangle(img, (yL, xL), (yH, xH), (255,0,0), 2)
 #    print("xL: ",xL,"xH: ",xH,"yL: ",yL,"yH: ",yH)
-    return b_img
+    #return b_img
+    print("xL: ",xL,"xH: ",xH,"yL: ",yL,"yH: ",yH)
+    return xL,xH,yL,yH
 
 #def search_colour(mask_img,box):
 #    value = sum(sum(mask_img[box[0]:box[1],box[2]:box[3]]))
